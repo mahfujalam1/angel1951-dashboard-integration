@@ -21,7 +21,7 @@ interface Shipment {
   trackingId: string;
   sender: string;
   receiver: string;
-  type: "Corporate" | "Business" | "Container" | "Regular";
+  type: "Corporate" | "Business" | "Container" | "Individual";
   status: string;
   date: string;
   orgId?: string;
@@ -66,6 +66,16 @@ const BranchShipments: React.FC = () => {
       date: "2024-03-19",
       orgId: "GL-12",
       email: "global@logistics.com",
+    },
+    {
+      id: "4",
+      trackingId: "ANGL-22019",
+      sender: "Michael Chen",
+      receiver: "Sarah Johnson",
+      type: "Individual",
+      status: "In Transit",
+      date: "2024-03-22",
+      email: "m.chen@example.com",
     },
   ]);
 
@@ -113,7 +123,9 @@ const BranchShipments: React.FC = () => {
                 ? "blue"
                 : type === "Container"
                   ? "orange"
-                  : "default"
+                  : type === "Individual"
+                    ? "cyan"
+                    : "default"
           }
         >
           {type}
@@ -204,6 +216,7 @@ const BranchShipments: React.FC = () => {
               <Option value="Corporate">Corporate</Option>
               <Option value="Business">Business</Option>
               <Option value="Container">Container</Option>
+              <Option value="Individual">Individual</Option>
             </Select>
           </div>
 

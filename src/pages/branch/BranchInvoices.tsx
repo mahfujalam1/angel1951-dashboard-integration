@@ -9,6 +9,7 @@ import {
   message,
   InputNumber,
   Checkbox,
+  Tabs,
 } from "antd";
 import {
   CreditCard,
@@ -32,7 +33,7 @@ interface Customer {
   id: string;
   name: string;
   email: string;
-  type: "Business" | "Container" | "Corporate";
+  type: "Business" | "Container" | "Corporate" | "Individual";
   orgName: string;
   orgId: string;
 }
@@ -598,133 +599,179 @@ const InstalmentInvoiceView: React.FC<{
 
 // ─── Main Invoice List ────────────────────────────────────────────────────────
 const BranchInvoices: React.FC = () => {
-  const [filterType, setFilterType] = useState<
-    "Business" | "Container" | "Corporate" | null
-  >(null);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
-    null,
-  );
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [globalInstalments, setGlobalInstalments] = useState<number>(2);
 
   const customers: Customer[] = [
-    {
-      id: "C1",
-      name: "Alice Smith",
-      email: "alice@apex.com",
-      type: "Business",
-      orgName: "Apex Corp",
-      orgId: "AP-99",
-    },
-    {
-      id: "C2",
-      name: "Bob Jones",
-      email: "bob@globex.com",
-      type: "Container",
-      orgName: "Globex Logistics",
-      orgId: "GL-12",
-    },
-    {
-      id: "C3",
-      name: "Sara Khan",
-      email: "sara@techcorp.com",
-      type: "Corporate",
-      orgName: "TechCorp Solutions",
-      orgId: "TC-77",
-    },
+    { id: "C1", name: "Alice Smith", email: "alice@apex.com", type: "Business", orgName: "Apex Corp", orgId: "AP-99" },
+    { id: "C2", name: "Bob Jones", email: "bob@globex.com", type: "Container", orgName: "Globex Logistics", orgId: "GL-12" },
+    { id: "C3", name: "Sara Khan", email: "sara@techcorp.com", type: "Corporate", orgName: "TechCorp Solutions", orgId: "TC-77" },
+    { id: "C4", name: "John Doe", email: "john@example.com", type: "Individual", orgName: "Personal Account", orgId: "IND-01" },
   ];
 
-  const filteredCustomers = customers.filter((c) => {
-    const matchesType = filterType ? c.type === filterType : true;
-    const matchesSearch = searchQuery
-      ? c.orgName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        c.name.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
-    return matchesType && matchesSearch;
-  });
+  const stats = [
+    { role: "Corporate", paid: 12, pending: 5, color: "purple" },
+    { role: "Business", paid: 28, pending: 12, color: "blue" },
+    { role: "Container", paid: 15, pending: 8, color: "geekblue" },
+    { role: "Individual", paid: 45, pending: 20, color: "cyan" },
+  ];
 
-  // Route to the correct detail view
+  const tagColor = (type: string) =>
+    type === "Business" ? "blue" : type === "Container" ? "geekblue" : type === "Individual" ? "cyan" : "purple";
+
+  // Detailed view for Business, Container, Individual
+  const DetailedInvoiceTable: React.FC<{ customer: Customer; onBack: () => void }> = ({ customer, onBack }) => {
+    const [activeTab, setActiveTab] = useState<"paid" | "pending">("pending");
+    const [localSearch, setLocalSearch] = useState("");
+
+    const mockInvoices = [
+      { id: "INV-001", amount: 1200, status: "paid", date: "2024-03-10" },
+      { id: "INV-002", amount: 850, status: "pending", date: "2024-03-15" },
+      { id: "INV-003", amount: 2100, status: "pending", date: "2024-03-18" },
+    ];
+
+    const filtered = mockInvoices.filter(inv => inv.status === activeTab);
+
+    return (
+      <div className="space-y-6 animate-fadeIn">
+        <div className="flex items-center gap-4">
+          <Button type="text" icon={<ArrowLeft size={20} />} onClick={onBack} />
+          <div>
+            <h2 className="text-xl font-bold text-slate-800">{customer.orgName}</h2>
+            <p className="text-sm text-slate-500">{customer.email} • <Tag color={tagColor(customer.type)}>{customer.type}</Tag></p>
+          </div>
+        </div>
+
+        <Card>
+          <div className="px-4 pt-4 border-b border-slate-100 flex justify-between items-end bg-white">
+            <Tabs 
+              activeKey={activeTab} 
+              onChange={(key) => setActiveTab(key as "paid" | "pending")}
+              className="invoice-tabs"
+              items={[
+                { key: "pending", label: <span className="px-4 font-bold">Pending Invoices</span> },
+                { key: "paid", label: <span className="px-4 font-bold">Paid History</span> },
+              ]}
+            />
+            <div className="pb-3">
+              <Input 
+                placeholder="Search Organization..." 
+                prefix={<Search size={16} />} 
+                className="max-w-xs h-10 rounded-xl"
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+              />
+            </div>
+          </div>
+          <Table 
+            dataSource={filtered}
+            columns={[
+              { title: "Invoice ID", dataIndex: "id", key: "id", render: (t) => <span className="font-bold text-blue-600">{t}</span> },
+              { title: "Date", dataIndex: "date", key: "date" },
+              { title: "Amount", dataIndex: "amount", key: "amount", render: (a) => `₱${a.toLocaleString()}` },
+              { title: "Status", dataIndex: "status", key: "status", render: (s) => <Tag color={s === "paid" ? "green" : "orange"}>{s.toUpperCase()}</Tag> },
+              { title: "Action", key: "action", align: "right", render: () => <Button type="link">Download PDF</Button> }
+            ]}
+          />
+        </Card>
+      </div>
+    );
+  };
+
+  // CUSTOMER DRILLDOWN
   if (selectedCustomer) {
     if (selectedCustomer.type === "Corporate") {
-      return (
-        <CorporateInvoiceView
-          customer={selectedCustomer}
-          onBack={() => setSelectedCustomer(null)}
-        />
-      );
+      return <CorporateInvoiceView customer={selectedCustomer} onBack={() => setSelectedCustomer(null)} />;
     }
+    return <DetailedInvoiceTable customer={selectedCustomer} onBack={() => setSelectedCustomer(null)} />;
+  }
+
+  // DRILLDOWN VIEW BY ROLE
+  if (selectedRole) {
+    const roleCustomers = customers.filter(c => c.type === selectedRole);
     return (
-      <InstalmentInvoiceView
-        customer={selectedCustomer}
-        onBack={() => setSelectedCustomer(null)}
-        globalInstalments={globalInstalments}
-      />
+      <div className="space-y-6 p-6 bg-slate-50 min-h-screen">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button type="text" icon={<ArrowLeft size={20} />} onClick={() => setSelectedRole(null)} />
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight" style={{ fontFamily: "Sora, sans-serif" }}>
+              {selectedRole} Invoices
+            </h2>
+          </div>
+          <Input 
+            placeholder="Search Organization..." 
+            prefix={<Search size={18} className="text-slate-400" />} 
+            className="max-w-md h-11 rounded-xl shadow-sm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <Card>
+          <Table 
+            dataSource={roleCustomers.filter(c => 
+              c.orgName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              c.name.toLowerCase().includes(searchQuery.toLowerCase())
+            )}
+            columns={[
+              { title: "Organization", dataIndex: "orgName", key: "org", render: (t) => <span className="font-bold">{t}</span> },
+              { title: "Contact", dataIndex: "name", key: "name" },
+              { title: "Email", dataIndex: "email", key: "email" },
+              { title: "Actions", key: "action", align: "right", render: (_, record) => (
+                <Button type="primary" ghost onClick={() => setSelectedCustomer(record)}>View Records</Button>
+              )}
+            ]}
+          />
+        </Card>
+      </div>
     );
   }
 
-  const tagColor = (type: string) =>
-    type === "Business" ? "blue" : type === "Container" ? "geekblue" : "purple";
-
   return (
-    <div className="p-6 bg-slate-50 min-h-screen">
-      <div className="mb-8 flex flex-col md:flex-row md:items-start justify-between gap-6">
-        <div>
-          <h1
-            className="text-2xl font-bold text-slate-800"
-            style={{ fontFamily: "Sora, sans-serif" }}
-          >
-            Customer Invoicing
-          </h1>
-          <p className="text-slate-500 text-sm">
-            Find customers to generate consolidated or instalment invoices
-          </p>
-        </div>
-
-        {/* Instalment Setting */}
-        <div className="flex-shrink-0">
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm px-5 py-4 flex items-center gap-5">
-            <div>
-              <p className="text-lg font-bold text-slate-400 uppercase tracking-widest mb-0.5">
-                Instalment Plan
-              </p>
-              <p className="text-xs text-slate-500">
-                Applied to all Business & Container customers
-              </p>
-            </div>
-            <div className="flex gap-2">
-              {[2, 3].map((n) => (
-                <button
-                  key={n}
-                  onClick={() => setGlobalInstalments(n)}
-                  className={`w-16 py-2 rounded-xl text-sm font-bold border transition-all ${
-                    globalInstalments === n
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-100"
-                      : "bg-white text-slate-500 border-slate-200 hover:border-blue-400"
-                  }`}
-                >
-                  {n}x
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+    <div className="p-6 bg-slate-50 min-h-screen space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-slate-800" style={{ fontFamily: "Sora, sans-serif" }}>
+          Customer Invoicing
+        </h1>
+        <p className="text-slate-500 text-sm">Find customers to generate consolidated or instalment invoices</p>
       </div>
 
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((s) => (
+          <div 
+            key={s.role}
+            onClick={() => setSelectedRole(s.role)}
+            className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <span className={`text-[10px] font-black uppercase tracking-widest text-${s.color}-500`}>{s.role}</span>
+              <div className={`p-2 bg-${s.color}-50 text-${s.color}-600 rounded-xl group-hover:scale-110 transition-transform`}>
+                <Layers size={18} />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="flex justify-between items-baseline">
+                <span className="text-2xl font-black text-slate-800">{s.pending}</span>
+                <span className="text-[10px] font-bold text-orange-500 uppercase">Pending</span>
+              </div>
+              <div className="flex justify-between items-baseline">
+                <span className="text-lg font-bold text-slate-400">{s.paid}</span>
+                <span className="text-[10px] font-bold text-green-500 uppercase">Paid</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Main Table Section */}
       <Card>
         <div className="p-4 border-b border-slate-50 flex flex-wrap items-center gap-4 bg-slate-50/50">
           <div className="flex items-center gap-2">
             <Filter size={18} className="text-slate-400" />
-            <Select
-              placeholder="Customer Type"
-              style={{ width: 180 }}
-              allowClear
-              onChange={(val) => setFilterType(val)}
-            >
-              <Option value="Corporate">Corporate</Option>
-              <Option value="Business">Business</Option>
-              <Option value="Container">Container</Option>
-            </Select>
+            <span className="text-sm font-bold text-slate-500">All Customers</span>
           </div>
 
           <Input
@@ -737,6 +784,10 @@ const BranchInvoices: React.FC = () => {
         </div>
 
         <Table
+          dataSource={customers.filter(c => 
+            c.orgName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            c.email.toLowerCase().includes(searchQuery.toLowerCase())
+          )}
           columns={[
             {
               title: "Organization",
@@ -776,17 +827,6 @@ const BranchInvoices: React.FC = () => {
               render: (type) => <Tag color={tagColor(type)}>{type}</Tag>,
             },
             {
-              title: "Invoice Mode",
-              key: "mode",
-              render: (_, record) => (
-                <span className="text-xs text-slate-500">
-                  {record.type === "Corporate"
-                    ? "Consolidated"
-                    : "Instalment (2–3x)"}
-                </span>
-              ),
-            },
-            {
               title: "Actions",
               key: "actions",
               align: "right" as const,
@@ -803,7 +843,6 @@ const BranchInvoices: React.FC = () => {
               ),
             },
           ]}
-          dataSource={filteredCustomers}
           rowKey="id"
           pagination={{ pageSize: 10 }}
         />
