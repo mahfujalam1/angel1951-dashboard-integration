@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal } from 'antd';
+import { Modal, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Eye } from 'lucide-react';
+import { Eye, X, Box, CreditCard, FileText, ShieldCheck } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import AppTable from '../components/ui/AppTable';
 import StatCard from '../components/ui/StatCard';
@@ -66,29 +66,103 @@ const PaymentsPage: React.FC = () => {
       <AppTable columns={columns} data={filtered.slice((page - 1) * 10, page * 10)}
         total={filtered.length} pageSize={10} current={page} onPageChange={setPage} />
 
-      <Modal open={!!viewPayment} onCancel={() => setViewPayment(null)} footer={null} title="Payment Details" width={420}>
+      {/* Payment Details Modal */}
+      <Modal 
+        open={!!viewPayment} 
+        onCancel={() => setViewPayment(null)} 
+        footer={null} 
+        title={null}
+        centered
+        width={500}
+        closeIcon={<div className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-all text-slate-500"><X size={16} /></div>}
+      >
         {viewPayment && (
-          <div className="pt-3 space-y-3">
-            <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-              <Avatar src={viewPayment.avatar} name={viewPayment.customer} size={48} />
-              <div>
-                <p className="font-bold text-slate-800">{viewPayment.customer}</p>
-                <p className="text-xs text-slate-400 font-mono">{viewPayment.paymentId}</p>
-              </div>
-              <StatusBadge status={viewPayment.status} className="ml-auto" />
+          <div className="pt-2">
+            <div className="mb-8">
+              <h2 className="text-xl font-bold text-slate-800 mb-1" style={{ fontFamily: 'Sora, sans-serif' }}>Payment Information</h2>
+              <p className="text-xs text-slate-400">Secure payment processing for logistics services</p>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: 'Amount', value: viewPayment.amount },
-                { label: 'Method', value: viewPayment.method },
-                { label: 'Type', value: viewPayment.type },
-                { label: 'Date', value: viewPayment.date },
-              ].map(item => (
-                <div key={item.label} className="bg-slate-50 rounded-xl p-3">
-                  <p className="text-xs text-slate-400 font-medium mb-0.5">{item.label}</p>
-                  <p className="text-sm font-bold text-slate-700">{item.value}</p>
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Service Type</label>
+                <div className="flex items-center gap-2 px-3 h-11 bg-slate-50 border border-slate-100 rounded-xl">
+                  <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-slate-400">
+                    <Box size={14} />
+                  </div>
+                  <span className="text-sm font-semibold text-slate-700">Freight Transport</span>
                 </div>
-              ))}
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Currency</label>
+                <div className="flex items-center gap-2 px-3 h-11 bg-slate-50 border border-slate-100 rounded-xl">
+                  <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-slate-400">
+                    <CreditCard size={14} />
+                  </div>
+                  <span className="text-sm font-semibold text-slate-700">USD - US Dollar</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mb-8">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Amount Payable</label>
+              <div className="flex items-center justify-between px-4 h-14 bg-blue-50 border border-blue-100 rounded-2xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-blue-600 shadow-sm">
+                    <FileText size={16} />
+                  </div>
+                  <span className="text-xl font-bold text-blue-700" style={{ fontFamily: 'Sora, sans-serif' }}>45,000.00</span>
+                </div>
+                <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wider">Calculated</span>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-8">
+              <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Order Breakdown</h4>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-500">Base Freight Charges</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1 h-4 bg-slate-800 rounded-full"></span>
+                    <span className="text-sm font-bold text-slate-700">42,500.00</span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center pb-4 border-b border-dashed border-slate-200">
+                  <span className="text-sm text-slate-500">Handling & Processing</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1 h-4 bg-slate-800 rounded-full"></span>
+                    <span className="text-sm font-bold text-slate-700">2,500.00</span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-base font-bold text-slate-800">Total Payable</span>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+                    <span className="text-xl font-bold text-blue-700">45,000.00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-center gap-6 mb-8 text-slate-400">
+              <div className="flex items-center gap-1.5 text-[10px] font-medium">
+                <ShieldCheck size={14} /> SSL Secure Payment
+              </div>
+              <div className="flex items-center gap-1.5 text-[10px] font-medium">
+                <ShieldCheck size={14} /> Verified Enterprise
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <Button 
+                type="primary" 
+                size="large"
+                onClick={() => setViewPayment(null)}
+                className="w-full h-12 bg-blue-900 hover:bg-blue-800 border-none font-bold text-sm"
+                style={{ borderRadius: 12 }}
+              >
+                ok
+              </Button>
             </div>
           </div>
         )}

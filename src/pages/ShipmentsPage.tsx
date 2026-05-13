@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Dropdown, Modal, Select, message, Form, Input } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ArrowRight, MoreVertical, Building2, UserCheck, RefreshCw, MessageSquare, Upload, Eye } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import AppTable from '../components/ui/AppTable';
 import StatusBadge from '../components/ui/StatusBadge';
-import Card from '../components/ui/Card';
 import { shipments as initialShipments } from '../data/mockData';
 import type { Shipment, ShipmentStatus } from '../types';
 
 const statusOptions: ShipmentStatus[] = ['In Transit', 'Custom Processing', 'Out of Delivery', 'Delivered', 'At Hub', 'Picked'];
 
 const ShipmentsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<Shipment[]>(initialShipments);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -77,15 +78,10 @@ const ShipmentsPage: React.FC = () => {
       title: 'Action', key: 'action', fixed: 'right' as const, width: 100,
       render: (_: unknown, r: Shipment) => (
         <div className="flex items-center gap-1">
-          <button onClick={() => setDetailItem(r)}
+          <button onClick={() => navigate(`/shipments/${r.id}`)}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
             <Eye size={15} />
           </button>
-          <Dropdown menu={{ items: getActions(r) }} trigger={['click']} placement="bottomRight">
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
-              <MoreVertical size={15} />
-            </button>
-          </Dropdown>
         </div>
       ),
     },

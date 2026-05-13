@@ -15,11 +15,6 @@ const StatCard: React.FC<Props> = ({ label, value, icon, color = '#2563eb', tren
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest truncate mb-2">{label}</p>
         <p className="text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>{value}</p>
-        {trend !== undefined && (
-          <p className={`text-xs font-medium mt-1.5 ${trend >= 0 ? 'text-emerald-500' : 'text-red-400'}`}>
-            {trend >= 0 ? '↑' : '↓'} {Math.abs(trend)}% vs last month
-          </p>
-        )}
       </div>
       {icon && (
         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"

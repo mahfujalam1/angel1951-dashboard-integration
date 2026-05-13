@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
     setLoading(true);
     const ok = await login(values.email, values.password);
     setLoading(false);
-    if (!ok) message.error('Invalid email or password. Try admin@buanenterprise.com / admin123');
+    if (!ok) message.error('Invalid email or password.');
   };
 
   return (
@@ -32,14 +32,14 @@ const LoginPage: React.FC = () => {
           <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
             <Truck size={20} className="text-white" />
           </div>
-          <span className="text-white text-xl font-bold" style={{ fontFamily: 'Sora, sans-serif' }}>Buan Enterprise</span>
+          <span className="text-white text-xl font-bold" style={{ fontFamily: 'Sora, sans-serif' }}>Buan Logistics</span>
         </div>
 
         {/* Content */}
         <div className="relative z-10 space-y-6">
           <div>
             <h1 className="text-4xl font-bold text-white leading-tight" style={{ fontFamily: 'Sora, sans-serif' }}>
-              Manage your<br />buan enterprise smarter
+              Manage your<br />Buan Logistics smarter
             </h1>
             <p className="mt-3 text-blue-200 text-base leading-relaxed">
               Track shipments, manage hubs, and streamline your delivery operations from one powerful dashboard.
@@ -60,7 +60,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        <p className="text-blue-300 text-xs relative z-10">© 2026 Buan Enterprise. All rights reserved.</p>
+        <p className="text-blue-300 text-xs relative z-10">© 2026 Buan Logistics. All rights reserved.</p>
       </div>
 
       {/* Right panel */}
@@ -71,19 +71,29 @@ const LoginPage: React.FC = () => {
             <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
               <Truck size={17} className="text-white" />
             </div>
-            <span className="text-slate-800 text-lg font-bold" style={{ fontFamily: 'Sora, sans-serif' }}>Buan Enterprise</span>
+            <span className="text-slate-800 text-lg font-bold" style={{ fontFamily: 'Sora, sans-serif' }}>Buan Logistics</span>
           </div>
 
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Welcome back 👋</h2>
-            <p className="text-slate-400 text-sm mt-1">Sign in to your admin dashboard</p>
+            <p className="text-slate-400 text-sm mt-1">Sign in to your dashboard</p>
           </div>
 
           {/* Demo credentials hint */}
           <div className="mb-6 px-4 py-3 bg-blue-50 rounded-xl border border-blue-100">
             <p className="text-xs text-blue-600 font-semibold mb-1">Demo Credentials:</p>
-            <p className="text-xs text-blue-500">📧 admin@buanenterprise.com</p>
-            <p className="text-xs text-blue-500">🔒 admin123</p>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <p className="text-[10px] text-blue-400 font-bold uppercase">Admin</p>
+                <p className="text-[11px] text-blue-500">📧 admin@buanenterprise.com</p>
+                <p className="text-[11px] text-blue-500">🔒 admin123</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-blue-400 font-bold uppercase">Branch</p>
+                <p className="text-[11px] text-blue-500">📧 branch@buanenterprise.com</p>
+                <p className="text-[11px] text-blue-500">🔒 branch123</p>
+              </div>
+            </div>
           </div>
 
           <Form layout="vertical" onFinish={onFinish} initialValues={{ email: 'admin@buanenterprise.com', password: 'admin123', remember: true }}>

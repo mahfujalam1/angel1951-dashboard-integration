@@ -13,6 +13,23 @@ import StaffPage from './pages/StaffPage';
 import PaymentsPage from './pages/PaymentsPage';
 import ReportsPage from './pages/ReportsPage';
 import ProfileSettings from './pages/ProfileSettings';
+import ShipmentDetailsPage from './pages/ShipmentDetailsPage';
+import ReferralProgramPage from './pages/ReferralProgramPage';
+import StaffDetailsPage from './pages/StaffDetailsPage';
+import BranchDashboard from './pages/branch/BranchDashboard';
+import BranchShipments from './pages/branch/BranchShipments';
+import BranchInvoices from './pages/branch/BranchInvoices';
+import BranchPartners from './pages/branch/BranchPartners';
+import QuoteRequestsPage from './pages/branch/QuoteRequestsPage';
+import CorporateShipmentsPage from './pages/branch/CorporateShipmentsPage';
+import HubManagementPage from './pages/branch/HubManagementPage';
+import CreateShipmentPage from './pages/branch/CreateShipmentPage';
+import BranchDetailsPage from './pages/branch/BranchDetailsPage';
+import ShipmentTrackingPage from './pages/branch/ShipmentTrackingPage';
+import QuoteDetailPage from './pages/branch/QuoteDetailPage';
+import CorporateDetailPage from './pages/branch/CorporateDetailPage';
+import HubParcelDetailPage from './pages/branch/HubParcelDetailPage';
+import BranchProfilePage from './pages/branch/BranchProfilePage';
 
 const antTheme = {
   token: {
@@ -38,35 +55,65 @@ const StaticPage: React.FC<{ title: string; content: string }> = ({ title, conte
   </div>
 );
 
-const ProtectedRoutes: React.FC = () => {
-  const { isLoggedIn } = useAuth();
-  if (!isLoggedIn) return <Navigate to="/login" replace />;
+const AppRoutes: React.FC = () => {
+  const { isLoggedIn, user } = useAuth();
+  
+  if (!isLoggedIn) {
+    return (
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
+  }
+
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<DashboardPage />} />
-        <Route path="/shipments" element={<ShipmentsPage />} />
-        <Route path="/users" element={<UsersPage />} />
-        <Route path="/hubs" element={<HubsPage />} />
-        <Route path="/hubs/:id" element={<HubDetailsPage />} />
-        <Route path="/staff" element={<StaffPage />} />
-        <Route path="/payments" element={<PaymentsPage />} />
-        <Route path="/reports" element={<ReportsPage />} />
-        <Route path="/settings/profile" element={<ProfileSettings />} />
-        <Route path="/settings/terms" element={<StaticPage title="Terms & Conditions" content="These terms govern your use of Buan Enterprise platform. By accessing this dashboard, you agree to be bound by these terms and all applicable regulations. Buan Enterprise reserves the right to modify these terms at any time." />} />
-        <Route path="/settings/privacy" element={<StaticPage title="Privacy Policy" content="Buan Enterprise is committed to protecting your privacy. We collect only the information necessary to provide our buan enterprise management services. Your data is never sold to third parties and is secured with industry-standard encryption." />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
-  );
-};
+        {/* Admin Routes */}
+        {user?.role === 'admin' && (
+          <>
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/shipments" element={<ShipmentsPage />} />
+            <Route path="/shipments/:id" element={<ShipmentDetailsPage />} />
+            <Route path="/users" element={<UsersPage />} />
+            <Route path="/hubs" element={<HubsPage />} />
+            <Route path="/hubs/:id" element={<HubDetailsPage />} />
+            <Route path="/staff" element={<StaffPage />} />
+            <Route path="/staff/:id" element={<StaffDetailsPage />} />
+            <Route path="/payments" element={<PaymentsPage />} />
+            <Route path="/referral" element={<ReferralProgramPage />} />
+            <Route path="/reports" element={<ReportsPage />} />
+          </>
+        )}
 
-const AppRoutes: React.FC = () => {
-  const { isLoggedIn } = useAuth();
-  return (
-    <Routes>
-      <Route path="/login" element={isLoggedIn ? <Navigate to="/" replace /> : <LoginPage />} />
-      <Route path="/*" element={<ProtectedRoutes />} />
+        {/* Branch Routes */}
+        {user?.role === 'branch' && (
+          <>
+            <Route path="/" element={<Navigate to="/branch/dashboard" replace />} />
+            <Route path="/branch/dashboard" element={<BranchDashboard />} />
+            <Route path="/branch/quotes" element={<QuoteRequestsPage />} />
+            <Route path="/branch/shipments" element={<BranchShipments />} />
+            <Route path="/branch/shipments/:id" element={<BranchDetailsPage />} />
+            <Route path="/branch/corporate-shipments" element={<CorporateShipmentsPage />} />
+            <Route path="/branch/corporate-shipments/:id" element={<CorporateDetailPage />} />
+            <Route path="/branch/invoices" element={<BranchInvoices />} />
+            <Route path="/branch/hubs" element={<HubManagementPage />} />
+            <Route path="/branch/hubs/parcels/:id" element={<HubParcelDetailPage />} />
+            <Route path="/branch/create-shipment" element={<CreateShipmentPage />} />
+            <Route path="/branch/quotes/:id" element={<QuoteDetailPage />} />
+            <Route path="/branch/track/:id" element={<ShipmentTrackingPage />} />
+            <Route path="/branch/profile" element={<BranchProfilePage />} />
+          </>
+        )}
+
+        {/* Common Routes */}
+        <Route path="/settings/profile" element={<ProfileSettings />} />
+        <Route path="/settings/terms" element={<StaticPage title="Terms & Conditions" content="These terms govern your use of Buan Logistics platform. By accessing this dashboard, you agree to be bound by these terms and all applicable regulations. Buan Logistics reserves the right to modify these terms at any time." />} />
+        <Route path="/settings/privacy" element={<StaticPage title="Privacy Policy" content="Buan Logistics is committed to protecting your privacy. We collect only the information necessary to provide our Buan Logistics management services. Your data is never sold to third parties and is secured with industry-standard encryption." />} />
+        
+        <Route path="*" element={<Navigate to={user?.role === 'branch' ? "/branch/dashboard" : "/"} replace />} />
+      </Route>
     </Routes>
   );
 };

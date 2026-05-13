@@ -119,7 +119,7 @@ const HubsPage: React.FC = () => {
           <Input placeholder="John Lim" style={{ borderRadius: 10 }} />
         </Form.Item>
         <Form.Item label="Email" name="email" className="col-span-2">
-          <Input placeholder="hub@Buan Enterprise.com" style={{ borderRadius: 10 }} />
+          <Input placeholder="hub@Buan Logistics.com" style={{ borderRadius: 10 }} />
         </Form.Item>
         <Form.Item label="Address" name="address" className="col-span-2">
           <Input placeholder="Full address" style={{ borderRadius: 10 }} />

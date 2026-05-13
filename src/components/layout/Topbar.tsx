@@ -34,7 +34,7 @@ const Topbar: React.FC<Props> = ({ onMenuToggle }) => {
 
   return (
     <header className="sticky top-0 z-20 h-16 bg-white border-b border-slate-100 flex items-center justify-between px-5 gap-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 ml-5 cursor-pointer">
         <p onClick={onMenuToggle}
           className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-500 transition-colors">
           <Menu size={19} />

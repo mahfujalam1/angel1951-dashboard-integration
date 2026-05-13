@@ -1,10 +1,11 @@
 import React from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Phone, Mail, MapPin, Clock, Users, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowLeft, Phone, Mail, MapPin, Clock, Users, CheckCircle2, XCircle, Home, User, Briefcase, Heart } from 'lucide-react';
 import Card from '../components/ui/Card';
 import StatusBadge from '../components/ui/StatusBadge';
 import type { Hub } from '../types';
 import { hubs } from '../data/mockData';
+import { Checkbox } from 'antd';
 
 const HubDetailsPage: React.FC = () => {
   const { id } = useParams();
@@ -14,121 +15,149 @@ const HubDetailsPage: React.FC = () => {
   const hub: Hub = location.state?.hub || hubs.find(h => h.id === id) || hubs[0];
 
   return (
-    <div className="space-y-5 max-w-3xl">
+    <div className="space-y-6 max-w-5xl mx-auto pb-10">
       {/* Back + header */}
       <div className="flex items-center gap-3">
         <button onClick={() => navigate(-1)}
-          className="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600">
-          <ArrowLeft size={17} />
+          className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600 shadow-sm">
+          <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-lg font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Hub Details</h1>
-          <p className="text-xs text-slate-400">Viewing full information for this hub</p>
+          <h1 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Hub Details</h1>
         </div>
       </div>
 
-      {/* Hub card */}
+      {/* Main Card with Illustration */}
       <Card>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3 mb-1">
-              <h2 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>
-                John's Provision Store
-              </h2>
-              <StatusBadge status={hub.status} />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-2">
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-slate-800 mb-2" style={{ fontFamily: 'Sora, sans-serif' }}>
+              John's Provision Store
+            </h2>
+            <div className="space-y-1">
+              <p className="text-sm text-slate-400 font-medium">Registered Since Feb 20 2022</p>
+              <p className="text-sm text-slate-400 font-medium">Approved by Sophiai Tan Admin on Feb 31 2022</p>
             </div>
-            <p className="text-sm text-slate-400">Registered Since Feb 20 2022</p>
-            <p className="text-sm text-slate-400">Approved by Sophia Tan Admin on Feb 21 2022</p>
           </div>
-          <div className="w-20 h-20 rounded-2xl bg-blue-50 flex items-center justify-center text-4xl flex-shrink-0">
-            🏪
+          <div className="w-32 h-32 relative">
+            <div className="absolute inset-0 bg-blue-50 rounded-full scale-90"></div>
+            <img 
+              src="https://img.freepik.com/free-vector/store-concept-illustration_114360-1238.jpg" 
+              alt="Store" 
+              className="w-full h-full object-contain relative z-10 rounded-2xl"
+            />
           </div>
-        </div>
-
-        {/* Quick stats */}
-        <div className="grid grid-cols-3 gap-3 mt-5">
-          {[
-            { label: 'Staff Count', value: hub.staffCount || 12, color: 'text-blue-600', bg: 'bg-blue-50' },
-            { label: 'Today Received', value: hub.throughput.split('/')[0].trim() || '120 Rcv', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-            { label: 'Today Departed', value: hub.throughput.split('/')[1]?.trim() || '85 Dep', color: 'text-purple-600', bg: 'bg-purple-50' },
-          ].map(s => (
-            <div key={s.label} className={`${s.bg} rounded-xl p-3 text-center`}>
-              <div className={`text-lg font-bold ${s.color}`} style={{ fontFamily: 'Sora, sans-serif' }}>{s.value}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{s.label}</div>
-            </div>
-          ))}
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* Shop Details */}
-        <Card title="Shop Details">
-          <div className="space-y-3">
-            {[
-              { icon: <MapPin size={14} />, label: 'Address', value: hub.address || '55 Hillview Ave Singapore 669950' },
-              { icon: <Phone size={14} />, label: 'Contact', value: hub.contactNumber },
-              { icon: <Mail size={14} />, label: 'Email', value: hub.email },
-              { icon: <MapPin size={14} />, label: 'Location', value: hub.hubLocation },
-            ].map(item => (
-              <div key={item.label} className="flex items-start gap-3 p-3 bg-slate-50 rounded-xl">
-                <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center text-slate-400 flex-shrink-0 mt-0.5">{item.icon}</div>
-                <div>
-                  <p className="text-xs text-slate-400 font-medium">{item.label}</p>
-                  <p className="text-sm font-semibold text-slate-700">{item.value}</p>
-                </div>
-              </div>
-            ))}
+      {/* 1. Shop Details */}
+      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
+        <div className="flex items-start gap-4 mb-6">
+          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">1.</div>
+          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Shop Details :</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 ml-12">
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-bold text-slate-800 mb-1">Shop Name John's Provision Store</p>
+              <p className="text-xs text-slate-500">Business Type Provision Store</p>
+            </div>
+            <div>
+              <p className="text-xs text-slate-500 leading-relaxed">Full Address 55 Hillview Ave Singapore 589900</p>
+              <p className="text-xs text-slate-500 mt-1">Landmark Near Hillview MRT Station</p>
+            </div>
           </div>
-        </Card>
+          <div className="space-y-4">
+            <p className="text-xs text-slate-500">City State Singapore</p>
+            <p className="text-xs text-slate-500">555 Contact Number</p>
+            <p className="text-xs text-slate-500">+65 8123 4567 johnsstore@email.com Google</p>
+            <p className="text-xs text-slate-500">johnsstore@email.com</p>
+          </div>
+        </div>
+      </div>
 
-        {/* Owner & Operations */}
-        <div className="space-y-5">
-          <Card title="Owner / Manager">
-            <div className="space-y-3">
-              {[
-                { label: 'Full Name', value: hub.manager || 'John Lim' },
-                { label: 'Phone', value: '+65 9123 4567' },
-                { label: 'Email', value: hub.email },
-              ].map(item => (
-                <div key={item.label} className="flex justify-between items-center py-2 border-b border-slate-50 last:border-0">
-                  <span className="text-xs text-slate-400 font-medium">{item.label}</span>
-                  <span className="text-sm font-semibold text-slate-700">{item.value}</span>
+      {/* 2. Owner/ Manager Details */}
+      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
+        <div className="flex items-start gap-4 mb-6">
+          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">2.</div>
+          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Owner/ Manager Details :</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 ml-12">
+          <div className="flex justify-between items-center max-w-sm">
+            <span className="text-xs text-slate-400">Full Name:</span>
+            <span className="text-xs font-bold text-slate-700">John Lim</span>
+          </div>
+          <div className="flex justify-between items-center max-w-sm">
+            <span className="text-xs text-slate-400">Phone Number:</span>
+            <span className="text-xs font-bold text-slate-700">+65 9123 4567</span>
+          </div>
+          <div className="flex justify-between items-center max-w-sm">
+            <span className="text-xs text-slate-400">Email Address:</span>
+            <span className="text-xs font-bold text-slate-700">johnsstore@email.com</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Shop Operations */}
+      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
+        <div className="flex items-start gap-4 mb-6">
+          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">3.</div>
+          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Shop Operations :</h3>
+        </div>
+        
+        <div className="ml-12 space-y-6">
+          <div className="flex items-center gap-8">
+            <span className="text-xs text-slate-400 w-32">Opening Days:</span>
+            <div className="flex gap-4">
+              {['Mon', 'Tue', 'Wed', 'Thu'].map(day => (
+                <div key={day} className="flex items-center gap-2">
+                  <Checkbox checked className="scale-90" />
+                  <span className="text-xs text-slate-600 font-medium">{day}</span>
                 </div>
               ))}
             </div>
-          </Card>
+          </div>
 
-          <Card title="Shop Operations">
-            <div className="space-y-3">
-              <div>
-                <p className="text-xs text-slate-400 font-medium mb-2">Opening Days</p>
-                <div className="flex gap-1.5 flex-wrap">
-                  {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => {
-                    const active = (hub.openDays || ['Mon','Tue','Wed','Thu','Fri']).includes(d);
-                    return (
-                      <span key={d} className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${active ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-300'}`}>
-                        {d}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl">
-                <Clock size={14} className="text-slate-400" />
-                <span className="text-sm font-semibold text-slate-700">{hub.hours || '09:00 AM - 06:00 PM'}</span>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-slate-50 rounded-xl">
-                  <p className="text-xs text-slate-400">Staff on Duty</p>
-                  <p className="font-bold text-slate-700 mt-0.5">02</p>
-                </div>
-                <div className="p-3 bg-slate-50 rounded-xl">
-                  <p className="text-xs text-slate-400">Foot Traffic</p>
-                  <p className="font-bold text-slate-700 mt-0.5">50–100</p>
-                </div>
-              </div>
-            </div>
-          </Card>
+          <div className="flex items-center gap-8">
+            <span className="text-xs text-slate-400 w-32">Opening Hours:</span>
+            <span className="text-xs font-bold text-slate-700">08:00 AM to 09:00 PM</span>
+          </div>
+
+          <div className="flex items-center gap-8">
+            <span className="text-xs text-slate-400 w-32">Number of Staff on Duty Daily:</span>
+            <span className="text-xs font-bold text-slate-700">02</span>
+          </div>
+
+          <div className="flex items-center gap-8">
+            <span className="text-xs text-slate-400 w-32">Secure for Parcels:</span>
+            <span className="text-xs font-bold text-slate-700">Yes</span>
+          </div>
+
+          <div className="flex items-center gap-8">
+            <span className="text-xs text-slate-400 w-32">Approx. Daily Foot Traffic:</span>
+            <span className="text-xs font-bold text-slate-700">50-100</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 5. Experience & Commitment */}
+      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
+        <div className="flex items-start gap-4 mb-6">
+          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">5.</div>
+          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Experience & Commitment :</h3>
+        </div>
+        
+        <div className="ml-12 space-y-4">
+          <p className="text-[10px] text-slate-500 font-medium">Used to handle delivery and logistics services</p>
+          <p className="text-[10px] text-slate-500 font-medium">Willing to commit as pickup hub for at least 1 month</p>
+          <p className="text-[10px] text-slate-500 font-medium">Special Note Handles fragile items with extra care</p>
+          <p className="text-[10px] text-slate-500 font-medium">Preferred pickup hub near major MRT station</p>
         </div>
       </div>
     </div>

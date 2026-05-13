@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Modal, Form, Input, Select, message, Dropdown } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Eye, Trash2, MoreVertical, Power, Edit } from 'lucide-react';
@@ -15,12 +16,12 @@ const roles = ['Delivery', 'Manager', 'Warehouse', 'Support'];
 const hubs = ['Dubai Hub', 'London Hub', 'NY Hub', 'Singapore Hub', 'Tokyo Hub', 'Sydney Hub'];
 
 const StaffPage: React.FC = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<Staff[]>(initialStaff);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [viewStaff, setViewStaff] = useState<Staff | null>(null);
   const [editStaff, setEditStaff] = useState<Staff | null>(null);
   const [createModal, setCreateModal] = useState(false);
   const [form] = Form.useForm();
@@ -68,7 +69,7 @@ const StaffPage: React.FC = () => {
   };
 
   const getActions = (r: Staff) => [
-    { key: 'view',   label: <span className="flex items-center gap-2"><Eye size={14} /> View Details</span>,    onClick: () => setViewStaff(r) },
+    { key: 'view',   label: <span className="flex items-center gap-2"><Eye size={14} /> View Details</span>,    onClick: () => navigate(`/staff/${r.id}`, { state: { staff: r } }) },
     { key: 'edit',   label: <span className="flex items-center gap-2"><Edit size={14} /> Edit</span>,            onClick: () => { setEditStaff(r); form.setFieldsValue(r); } },
     { key: 'toggle', label: <span className="flex items-center gap-2"><Power size={14} /> {r.status === 'Active' ? 'Deactivate' : 'Activate'}</span>, onClick: () => toggleStatus(r.id) },
     { type: 'divider' as const },
@@ -100,7 +101,7 @@ const StaffPage: React.FC = () => {
       title: '', key: 'action', width: 80,
       render: (_: unknown, r: Staff) => (
         <div className="flex items-center gap-1">
-          <button onClick={() => setViewStaff(r)}
+          <button onClick={() => navigate(`/staff/${r.id}`, { state: { staff: r } })}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
             <Eye size={15} />
           </button>
@@ -121,7 +122,7 @@ const StaffPage: React.FC = () => {
           <Input placeholder="Ahmed Khan" style={{ borderRadius: 10 }} />
         </Form.Item>
         <Form.Item label="Email" name="email">
-          <Input placeholder="ahmed@Buan Enterprise.com" style={{ borderRadius: 10 }} />
+          <Input placeholder="ahmed@Buan Logistics.com" style={{ borderRadius: 10 }} />
         </Form.Item>
         <Form.Item label="Contact" name="contact">
           <Input placeholder="+34594 65 6418" style={{ borderRadius: 10 }} />
@@ -166,37 +167,6 @@ const StaffPage: React.FC = () => {
       <AppTable columns={columns} data={filtered.slice((page - 1) * 10, page * 10)}
         total={filtered.length} pageSize={10} current={page} onPageChange={setPage} />
 
-      {/* View Staff Modal */}
-      <Modal open={!!viewStaff} onCancel={() => setViewStaff(null)} footer={null} title="Staff Details" width={460}>
-        {viewStaff && (
-          <div className="pt-3">
-            <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100">
-              <Avatar src={viewStaff.avatar} name={viewStaff.name} size={56} />
-              <div>
-                <h3 className="font-bold text-lg text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>{viewStaff.name}</h3>
-                <p className="text-sm text-slate-400">{viewStaff.email}</p>
-                <div className="flex gap-2 mt-2">
-                  <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">{viewStaff.role}</span>
-                  <StatusBadge status={viewStaff.status} />
-                </div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: 'Hub', value: viewStaff.hub },
-                { label: 'Contact', value: viewStaff.contact },
-                { label: 'Joined', value: viewStaff.joinDate },
-                { label: 'Deliveries', value: viewStaff.deliveries },
-              ].map(item => (
-                <div key={item.label} className="bg-slate-50 rounded-xl p-3">
-                  <p className="text-xs text-slate-400 font-medium mb-0.5">{item.label}</p>
-                  <p className="text-sm font-bold text-slate-700">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </Modal>
 
       <Modal open={createModal} onCancel={() => setCreateModal(false)} footer={null} title="Add New Staff" width={460}>
         <StaffForm onFinish={handleSave} />

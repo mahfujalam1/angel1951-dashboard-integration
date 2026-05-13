@@ -11,10 +11,10 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    return localStorage.getItem('buan_enterprise') === 'true';
+    return localStorage.getItem('buan_logged_in') === 'true';
   });
   const [user, setUser] = useState<AuthContextType['user']>(() => {
-    const stored = localStorage.getItem('buan_enterprise');
+    const stored = localStorage.getItem('buan_user_data');
     return stored ? JSON.parse(stored) : null;
   });
 
@@ -22,11 +22,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Simulate API call
     await new Promise(r => setTimeout(r, 800));
     if (email === 'admin@buanenterprise.com' && password === 'admin123') {
-      const u = { name: 'Mr. Admin', email, role: 'Super Admin' };
+      const u = { name: 'Mr. Admin', email, role: 'admin' };
       setIsLoggedIn(true);
       setUser(u);
-      localStorage.setItem('buan_enterprise', 'true');
-      localStorage.setItem('buan_enterprise', JSON.stringify(u));
+      localStorage.setItem('buan_logged_in', 'true');
+      localStorage.setItem('buan_user_data', JSON.stringify(u));
+      return true;
+    }
+    if (email === 'branch@buanenterprise.com' && password === 'branch123') {
+      const u = { name: 'Branch', email, role: 'branch' };
+      setIsLoggedIn(true);
+      setUser(u);
+      localStorage.setItem('buan_logged_in', 'true');
+      localStorage.setItem('buan_user_data', JSON.stringify(u));
       return true;
     }
     return false;
@@ -35,8 +43,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
-    localStorage.removeItem('buan_enterprise');
-    localStorage.removeItem('buan_enterprise');
+    localStorage.removeItem('buan_logged_in');
+    localStorage.removeItem('buan_user_data');
   };
 
   return (

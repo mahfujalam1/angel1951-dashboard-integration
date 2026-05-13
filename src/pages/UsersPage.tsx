@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Select, message, Descriptions } from 'antd';
+import { Modal, Form, Input, Select, message, Descriptions, Switch, Button } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Eye, Trash2, UserPlus } from 'lucide-react';
+import { Eye, Trash2, UserPlus, X, User } from 'lucide-react';
 import PageHeader from '../components/ui/PageHeader';
 import AppTable from '../components/ui/AppTable';
 import StatusBadge from '../components/ui/StatusBadge';
 import Avatar from '../components/ui/Avatar';
 import { users as initialUsers } from '../data/mockData';
-import type { User } from '../types';
+import { User as userType } from '@/types';
 
 const UsersPage: React.FC = () => {
-  const [data, setData] = useState<User[]>(initialUsers);
+  const [data, setData] = useState<userType[]>(initialUsers);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [viewUser, setViewUser] = useState<User | null>(null);
+  const [viewUser, setViewUser] = useState<userType | null>(null);
   const [createModal, setCreateModal] = useState(false);
   const [form] = Form.useForm();
 
@@ -37,8 +37,8 @@ const UsersPage: React.FC = () => {
     });
   };
 
-  const handleCreate = (values: Partial<User>) => {
-    const newUser: User = {
+  const handleCreate = (values: Partial<userType>) => {
+    const newUser: userType = {
       id: String(data.length + 1),
       serialNo: `#${12340 + data.length}`,
       name: values.name || '',
@@ -56,14 +56,14 @@ const UsersPage: React.FC = () => {
     form.resetFields();
   };
 
-  const columns: ColumnsType<User> = [
+  const columns: ColumnsType<userType> = [
     {
       title: 'S No.', dataIndex: 'serialNo', key: 'serialNo', width: 80,
       render: (v: string) => <span className="text-xs font-mono text-slate-400">{v}</span>,
     },
     {
       title: 'User', key: 'user',
-      render: (_: unknown, r: User) => (
+      render: (_: unknown, r: userType) => (
         <div className="flex items-center gap-3">
           <Avatar src={r.avatar} name={r.name} size={36} />
           <div>
@@ -77,11 +77,11 @@ const UsersPage: React.FC = () => {
     { title: 'Location', dataIndex: 'location', key: 'location', render: (v: string) => <span className="text-sm text-slate-500">{v}</span> },
     {
       title: 'Status', dataIndex: 'status', key: 'status',
-      render: (s: User['status']) => <StatusBadge status={s} />,
+      render: (s: userType['status']) => <StatusBadge status={s} />,
     },
     {
       title: 'Action', key: 'action', width: 90,
-      render: (_: unknown, r: User) => (
+      render: (_: unknown, r: userType) => (
         <div className="flex items-center gap-1.5">
           <button onClick={() => setViewUser(r)}
             className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
@@ -105,30 +105,70 @@ const UsersPage: React.FC = () => {
         total={filtered.length} pageSize={10} current={page} onPageChange={setPage} />
 
       {/* View User Modal */}
-      <Modal open={!!viewUser} onCancel={() => setViewUser(null)} footer={null} title="User Details" width={460}>
+      <Modal
+        open={!!viewUser}
+        onCancel={() => setViewUser(null)}
+        footer={null}
+        title={null}
+        centered
+        width={550}
+        closeIcon={<div className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-all text-slate-500"><X size={16} /></div>}
+      >
         {viewUser && (
-          <div className="pt-3">
-            <div className="flex items-center gap-4 mb-5 pb-5 border-b border-slate-100">
-              <Avatar src={viewUser.avatar} name={viewUser.name} size={56} />
+          <div className="pt-2">
+            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <User size={20} />
+              </div>
+              <h2 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>User Information</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
               <div>
-                <h3 className="font-bold text-lg text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>{viewUser.name}</h3>
-                <p className="text-sm text-slate-400">{viewUser.email}</p>
-                <StatusBadge status={viewUser.status} className="mt-2" />
+                <label className="text-xs font-bold text-slate-700 block mb-2">Full Name</label>
+                <Input value={viewUser.name} readOnly className="bg-slate-50 border-slate-200 rounded-xl h-11" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-2">Email Address</label>
+                <Input value={viewUser.email} readOnly className="bg-slate-50 border-slate-200 rounded-xl h-11" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-2">Phone Number</label>
+                <Input value={viewUser.phone} readOnly className="bg-slate-50 border-slate-200 rounded-xl h-11" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-2">Logistics ID</label>
+                <Input value={viewUser.serialNo.replace('#', 'LID-')} readOnly className="bg-slate-50 border-slate-200 rounded-xl h-11" />
+              </div>
+              <div className="col-span-1 md:col-span-2">
+                <label className="text-xs font-bold text-slate-700 block mb-2">Home Address</label>
+                <Input.TextArea
+                  value={viewUser.location + ", A block, 2 number road house 14."}
+                  readOnly
+                  rows={3}
+                  className="bg-slate-50 border-slate-200 rounded-xl"
+                />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: 'Serial No', value: viewUser.serialNo },
-                { label: 'Phone', value: viewUser.phone },
-                { label: 'Location', value: viewUser.location },
-                { label: 'Joined', value: viewUser.joinDate },
-                { label: 'Total Orders', value: viewUser.totalOrders },
-              ].map(item => (
-                <div key={item.label} className="bg-slate-50 rounded-xl p-3">
-                  <p className="text-xs text-slate-400 font-medium mb-0.5">{item.label}</p>
-                  <p className="text-sm font-semibold text-slate-700">{item.value}</p>
-                </div>
-              ))}
+
+            <div className="mt-6 p-4 bg-blue-50 rounded-2xl flex items-center justify-between border border-blue-100">
+              <div>
+                <h4 className="text-sm font-bold text-slate-800">Privacy Mode</h4>
+                <p className="text-xs text-slate-500">Your information will only be visible to authorized representatives</p>
+              </div>
+              <Switch defaultChecked className="bg-slate-300" />
+            </div>
+
+            <div className="mt-8 flex justify-center">
+              <Button
+                type="primary"
+                size="large"
+                onClick={() => setViewUser(null)}
+                className="w-48 h-12 bg-blue-900 hover:bg-blue-800 border-none font-bold text-sm"
+                style={{ borderRadius: 10 }}
+              >
+                Ok
+              </Button>
             </div>
           </div>
         )}

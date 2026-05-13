@@ -1,6 +1,6 @@
-# Buan Enterprise — Admin Dashboard
+# Buan Logistics — Admin Dashboard
 
-A fully responsive buan enterprise admin dashboard built with React, TypeScript, Tailwind CSS, Ant Design, Recharts, and Lucide icons.
+A fully responsive Buan Logistics admin dashboard built with React, TypeScript, Tailwind CSS, Ant Design, Recharts, and Lucide icons.
 
 ## 🚀 Getting Started
 

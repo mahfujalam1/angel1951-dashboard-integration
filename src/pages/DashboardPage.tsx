@@ -9,12 +9,12 @@ import { userGrowthData, earningGrowthData, hubRequests } from '../data/mockData
 import type { HubRequest } from '../types';
 
 const shipmentStats = [
-  { label: 'Total Created', value: 125, icon: <Package size={18} />, color: '#2563eb', trend: 12 },
-  { label: 'Total Picked',  value: 98,  icon: <PackageCheck size={18} />, color: '#7c3aed', trend: 8 },
-  { label: 'At Hub',        value: 34,  icon: <Warehouse size={18} />, color: '#0891b2', trend: -3 },
-  { label: 'In Transit',    value: 47,  icon: <Navigation size={18} />, color: '#d97706', trend: 5 },
-  { label: 'Out Delivery',  value: 22,  icon: <Truck size={18} />, color: '#dc2626', trend: 2 },
-  { label: 'Delivered',     value: 125, icon: <CheckCircle2 size={18} />, color: '#059669', trend: 18 },
+  { label: 'Total Created', value: 125, icon: <Package size={18} />, color: '#2563eb' },
+  { label: 'Total Picked',  value: 98,  icon: <PackageCheck size={18} />, color: '#7c3aed' },
+  { label: 'At Hub',        value: 34,  icon: <Warehouse size={18} />, color: '#0891b2' },
+  { label: 'In Transit',    value: 47,  icon: <Navigation size={18} />, color: '#d97706' },
+  { label: 'Out Delivery',  value: 22,  icon: <Truck size={18} />, color: '#dc2626' },
+  { label: 'Delivered',     value: 125, icon: <CheckCircle2 size={18} />, color: '#059669' },
 ];
 
 const DashboardPage: React.FC = () => {
@@ -91,7 +91,7 @@ const DashboardPage: React.FC = () => {
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
         {shipmentStats.map(s => (
-          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} color={s.color} trend={s.trend} />
+          <StatCard key={s.label} label={s.label} value={s.value} icon={s.icon} color={s.color} />
         ))}
       </div>
 
