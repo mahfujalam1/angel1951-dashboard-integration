@@ -122,12 +122,6 @@ const Sidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
             <div>
               <img src="/buan-logo.png" className="h-8" alt="logo" />
             </div>
-            <span
-              className="font-bold text-slate-800 text-base"
-              style={{ fontFamily: "Sora, sans-serif" }}
-            >
-              Buan Logistics
-            </span>
           </div>
           <button
             onClick={onToggle}
