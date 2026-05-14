@@ -18,7 +18,7 @@ const pieData = [
   { name: 'Regular', value: 400 },
   { name: 'Corporate', value: 300 },
   { name: 'Business', value: 300 },
-  { name: 'Container', value: 200 },
+  { name: 'Personalized Cargo', value: 200 },
 ];
 
 const COLORS = ['#2563eb', '#7c3aed', '#db2777', '#ea580c'];

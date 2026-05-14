@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Table, Tag, Button, Input, Select, Space, Modal, message } from "antd";
+import {
+  Table,
+  Tag,
+  Button,
+  Input,
+  Select,
+  Space,
+  Modal,
+  message,
+  Tooltip,
+} from "antd";
 import {
   Package,
   Search,
@@ -21,11 +31,12 @@ interface Shipment {
   trackingId: string;
   sender: string;
   receiver: string;
-  type: "Corporate" | "Business" | "Container" | "Individual";
+  type: "Corporate" | "Business" | "Personalized Cargo" | "Individual";
   status: string;
   date: string;
   orgId?: string;
   email?: string;
+  paidInstalments?: number; // 2 for full payment
 }
 
 const BranchShipments: React.FC = () => {
@@ -52,7 +63,7 @@ const BranchShipments: React.FC = () => {
       sender: "Sarah Ali",
       receiver: "Buan Hub",
       type: "Business",
-      status: "Pending",
+      status: "Shipment Created",
       date: "2024-03-20",
       email: "sarah@ali.com",
     },
@@ -61,11 +72,24 @@ const BranchShipments: React.FC = () => {
       trackingId: "ANGL-99281",
       sender: "Global Log",
       receiver: "UK Branch",
-      type: "Container",
-      status: "Delivered",
+      type: "Personalized Cargo",
+      status: "At Hub",
       date: "2024-03-19",
       orgId: "GL-12",
       email: "global@logistics.com",
+      paidInstalments: 1, // Only 1 paid, should block delivery
+    },
+    {
+      id: "5",
+      trackingId: "ANGL-33445",
+      sender: "Cargo Pros",
+      receiver: "Local Warehouse",
+      type: "Personalized Cargo",
+      status: "Custom Processing",
+      date: "2024-03-23",
+      orgId: "CP-01",
+      email: "contact@cargopros.com",
+      paidInstalments: 2, // Fully paid, should allow delivery
     },
     {
       id: "4",
@@ -121,7 +145,7 @@ const BranchShipments: React.FC = () => {
               ? "purple"
               : type === "Business"
                 ? "blue"
-                : type === "Container"
+                : type === "Personalized Cargo"
                   ? "orange"
                   : type === "Individual"
                     ? "cyan"
@@ -136,11 +160,34 @@ const BranchShipments: React.FC = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => (
-        <Tag color={status === "Delivered" ? "green" : "processing"}>
-          {status}
-        </Tag>
-      ),
+      render: (status: string) => {
+        let colorClasses = "text-gray-500 border-gray-400 bg-gray-50";
+        switch (status) {
+          case "Shipment Created":
+            colorClasses = "text-orange-500 border-orange-400 bg-orange-50";
+            break;
+          case "At Hub":
+            colorClasses = "text-emerald-500 border-emerald-400 bg-emerald-50";
+            break;
+          case "In Transit":
+            colorClasses = "text-blue-500 border-blue-400 bg-blue-50";
+            break;
+          case "Custom Processing":
+            colorClasses = "text-purple-500 border-purple-400 bg-purple-50";
+            break;
+          case "Out of Delivery":
+            colorClasses = "text-slate-500 border-slate-400 bg-slate-50";
+            break;
+          case "Delivered":
+            colorClasses = "text-yellow-600 border-yellow-500 bg-yellow-50";
+            break;
+        }
+        return (
+          <span className={`inline-flex items-center px-3 py-1 rounded-full border text-[10px] font-black uppercase tracking-wider ${colorClasses}`}>
+            {status}
+          </span>
+        );
+      },
     },
     {
       title: "Date",
@@ -150,6 +197,7 @@ const BranchShipments: React.FC = () => {
     {
       title: "Actions",
       key: "actions",
+      align: "center",
       render: (_: any, record: Shipment) => (
         <Space size="middle">
           <Button
@@ -159,8 +207,39 @@ const BranchShipments: React.FC = () => {
               navigate(`/branch/shipments/${record.id}`);
             }}
           />
+          {record.status !== "Delivered" && (
+            <Tooltip
+              title={
+                record.type === "Personalized Cargo" &&
+                (record.paidInstalments || 0) < 2
+                  ? "Delivery blocked: Personalized Cargo requires 2/2 instalments paid."
+                  : ""
+              }
+            >
+              <Select
+                size="small"
+                defaultValue={record.status}
+                style={{ width: 140 }}
+                disabled={
+                  record.type === "Personalized Cargo" &&
+                  (record.paidInstalments || 0) < 2
+                }
+                onChange={(newStatus) => {
+                  message.success(
+                    `Shipment ${record.trackingId} status updated to ${newStatus}`
+                  );
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {["At Hub", "In Transit", "Custom Processing", "Out of Delivery", "Delivered"].map(status => (
+                  <Option key={status} value={status}>{status}</Option>
+                ))}
+              </Select>
+            </Tooltip>
+          )}
           <Button
-            type="primary"
+            type="default"
+            size="small"
             onClick={() => navigate(`/branch/track/${record.id}`)}
           >
             Track
@@ -215,7 +294,7 @@ const BranchShipments: React.FC = () => {
             >
               <Option value="Corporate">Corporate</Option>
               <Option value="Business">Business</Option>
-              <Option value="Container">Container</Option>
+              <Option value="Personalized Cargo">Personalized Cargo</Option>
               <Option value="Individual">Individual</Option>
             </Select>
           </div>

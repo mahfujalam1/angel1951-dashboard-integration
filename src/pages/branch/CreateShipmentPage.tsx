@@ -7,11 +7,11 @@ import NigeriaToAbroadForm from "../../components/forms/NigeriaToAbroadForm";
 const CreateShipmentPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"international" | "nigeria">(
-    "international",
+    "nigeria",
   );
 
   const tabs = [
-    { key: "international", label: "International" },
+    // { key: "international", label: "International" },
     { key: "nigeria", label: "Nigeria to Abroad" },
   ] as const;
 
@@ -68,9 +68,9 @@ const CreateShipmentPage: React.FC = () => {
 
         {/* Form Container */}
         <div>
-          {activeTab === "international" ? (
+          {/* activeTab === "international" ? (
             <InternationalForm />
-          ) : (
+          ) : */ (
             <NigeriaToAbroadForm />
           )}
         </div>

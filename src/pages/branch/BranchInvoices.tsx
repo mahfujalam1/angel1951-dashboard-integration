@@ -8,11 +8,9 @@ import {
   Modal,
   message,
   InputNumber,
-  Checkbox,
   Tabs,
 } from "antd";
 import {
-  CreditCard,
   Search,
   Filter,
   Building2,
@@ -33,7 +31,7 @@ interface Customer {
   id: string;
   name: string;
   email: string;
-  type: "Business" | "Container" | "Corporate" | "Individual";
+  type: "Business" | "Personalized Cargo" | "Corporate" | "Individual";
   orgName: string;
   orgId: string;
 }
@@ -281,7 +279,7 @@ const CorporateInvoiceView: React.FC<{
   );
 };
 
-// ─── Business / Container Instalment View ────────────────────────────────────
+// ─── Business / Personalized Cargo Instalment View ────────────────────────────────────
 const InstalmentInvoiceView: React.FC<{
   customer: Customer;
   onBack: () => void;
@@ -328,17 +326,25 @@ const InstalmentInvoiceView: React.FC<{
 
   const instalmentBreakdown = Array.from({ length: instalments }, (_, i) => {
     const isLast = i === instalments - 1;
-    const dueDate = new Date();
-    dueDate.setMonth(dueDate.getMonth() + i + 1);
+    let dueLabel = "";
+    
+    if (customer.type === "Personalized Cargo") {
+      dueLabel = i === 0 ? "Origin Departure" : "After Arrival";
+    } else {
+      const dueDate = new Date();
+      dueDate.setMonth(dueDate.getMonth() + i + 1);
+      dueLabel = dueDate.toLocaleDateString("en-GB", {
+        month: "short",
+        year: "numeric",
+      });
+    }
+
     return {
       num: i + 1,
       amount: isLast
         ? total - perInstalment * (instalments - 1)
         : perInstalment,
-      due: dueDate.toLocaleDateString("en-GB", {
-        month: "short",
-        year: "numeric",
-      }),
+      due: dueLabel,
     };
   });
 
@@ -487,15 +493,16 @@ const InstalmentInvoiceView: React.FC<{
                   <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100">
                     <Layers size={16} className="text-blue-500" />
                     <span className="text-sm font-bold text-blue-700">
-                      {instalments} Instalments
+                    {customer.type === "Personalized Cargo" ? "2 (Strict)" : instalments} Instalments
                     </span>
                     <span className="text-xs text-blue-400 ml-auto">
                       Set globally
                     </span>
                   </div>
                   <p className="text-[10px] text-slate-400 mt-1.5 italic">
-                    To change, go back and update the global setting on the
-                    invoices list.
+                    {customer.type === "Personalized Cargo" 
+                      ? "2-instalment rule: Origin departure & After arrival. No delivery without full payment."
+                      : "To change, go back and update the global setting on the invoices list."}
                   </p>
                 </div>
 
@@ -606,7 +613,7 @@ const BranchInvoices: React.FC = () => {
 
   const customers: Customer[] = [
     { id: "C1", name: "Alice Smith", email: "alice@apex.com", type: "Business", orgName: "Apex Corp", orgId: "AP-99" },
-    { id: "C2", name: "Bob Jones", email: "bob@globex.com", type: "Container", orgName: "Globex Logistics", orgId: "GL-12" },
+    { id: "C2", name: "Bob Jones", email: "bob@globex.com", type: "Personalized Cargo", orgName: "Globex Logistics", orgId: "GL-12" },
     { id: "C3", name: "Sara Khan", email: "sara@techcorp.com", type: "Corporate", orgName: "TechCorp Solutions", orgId: "TC-77" },
     { id: "C4", name: "John Doe", email: "john@example.com", type: "Individual", orgName: "Personal Account", orgId: "IND-01" },
   ];
@@ -614,12 +621,12 @@ const BranchInvoices: React.FC = () => {
   const stats = [
     { role: "Corporate", paid: 12, pending: 5, color: "purple" },
     { role: "Business", paid: 28, pending: 12, color: "blue" },
-    { role: "Container", paid: 15, pending: 8, color: "geekblue" },
+    { role: "Personalized Cargo", paid: 15, pending: 8, color: "geekblue" },
     { role: "Individual", paid: 45, pending: 20, color: "cyan" },
   ];
 
   const tagColor = (type: string) =>
-    type === "Business" ? "blue" : type === "Container" ? "geekblue" : type === "Individual" ? "cyan" : "purple";
+    type === "Business" ? "blue" : type === "Personalized Cargo" ? "geekblue" : type === "Individual" ? "cyan" : "purple";
 
   // Detailed view for Business, Container, Individual
   const DetailedInvoiceTable: React.FC<{ customer: Customer; onBack: () => void }> = ({ customer, onBack }) => {

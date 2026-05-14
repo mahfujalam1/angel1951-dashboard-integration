@@ -164,6 +164,7 @@ export default function InternationalForm() {
               <option value="">Select</option>
               <option value="electronics">Electronics</option>
               <option value="clothing">Clothing</option>
+              <option value="personalized_cargo">Personalized Cargo</option>
               <option value="documents">Documents</option>
               <option value="others">Others</option>
             </select>
