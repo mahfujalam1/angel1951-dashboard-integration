@@ -197,7 +197,7 @@ const BranchShipments: React.FC = () => {
     {
       title: "Actions",
       key: "actions",
-      align: "center",
+      align: "center" as const,
       render: (_: any, record: Shipment) => (
         <Space size="middle">
           <Button
