@@ -16,6 +16,12 @@ import ProfileSettings from './pages/ProfileSettings';
 import ShipmentDetailsPage from './pages/ShipmentDetailsPage';
 import ReferralProgramPage from './pages/ReferralProgramPage';
 import StaffDetailsPage from './pages/StaffDetailsPage';
+import HubApplicationsPage from './pages/HubApplicationsPage';
+import CorporateApplicationsPage from './pages/CorporateApplicationsPage';
+import UpgradeApplicationsPage from './pages/UpgradeApplicationsPage';
+import HubApplicationDetailsPage from './pages/HubApplicationDetailsPage';
+import CorporateApplicationDetailsPage from './pages/CorporateApplicationDetailsPage';
+import UpgradeApplicationDetailsPage from './pages/UpgradeApplicationDetailsPage';
 import BranchDashboard from './pages/branch/BranchDashboard';
 import BranchShipments from './pages/branch/BranchShipments';
 import BranchInvoices from './pages/branch/BranchInvoices';
@@ -62,6 +68,9 @@ const AppRoutes: React.FC = () => {
     return (
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<LoginPage />} />
+        <Route path="/otp-verify" element={<LoginPage />} />
+        <Route path="/reset-password" element={<LoginPage />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -77,6 +86,12 @@ const AppRoutes: React.FC = () => {
             <Route path="/shipments" element={<ShipmentsPage />} />
             <Route path="/shipments/:id" element={<ShipmentDetailsPage />} />
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/hub-applications" element={<HubApplicationsPage />} />
+            <Route path="/hub-applications/:id" element={<HubApplicationDetailsPage />} />
+            <Route path="/corporate-applications" element={<CorporateApplicationsPage />} />
+            <Route path="/corporate-applications/:id" element={<CorporateApplicationDetailsPage />} />
+            <Route path="/upgrade-applications" element={<UpgradeApplicationsPage />} />
+            <Route path="/upgrade-applications/:id" element={<UpgradeApplicationDetailsPage />} />
             <Route path="/hubs" element={<HubsPage />} />
             <Route path="/hubs/:id" element={<HubDetailsPage />} />
             <Route path="/staff" element={<StaffPage />} />

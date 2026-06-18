@@ -14,6 +14,7 @@ import {
   FileText,
   User,
   BarChart3,
+  ArrowUpRight,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -26,6 +27,9 @@ const adminNavItems = [
     icon: Package,
   },
   { key: "users", label: "User Management", path: "/users", icon: Users },
+  { key: "hub-applications", label: "Hub Applications", path: "/hub-applications", icon: Building2 },
+  { key: "corporate-applications", label: "Corporate Applications", path: "/corporate-applications", icon: Building2 },
+  { key: "upgrade-applications", label: "Upgrade Applications", path: "/upgrade-applications", icon: ArrowUpRight },
   { key: "hubs", label: "Hub Management", path: "/hubs", icon: Building2 },
   { key: "staff", label: "Staff Management", path: "/staff", icon: UserCheck },
   {
@@ -163,28 +167,33 @@ const Sidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
           ))}
 
           {/* Profile Link */}
-          <Link
-            to="/branch/profile"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 no-underline group mt-1
-              ${
-                isActive("/branch/profile")
-                  ? "bg-blue-50 text-blue-600"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-              }`}
-          >
-            <User
-              size={17}
-              className={
-                isActive("/branch/profile")
-                  ? "text-blue-600"
-                  : "text-slate-400 group-hover:text-slate-600"
-              }
-            />
-            <span className="text-sm font-medium">Profile</span>
-            {isActive("/branch/profile") && (
-              <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500" />
-            )}
-          </Link>
+          {(() => {
+            const profilePath = user?.role === "branch" ? "/branch/profile" : "/settings/profile";
+            return (
+              <Link
+                to={profilePath}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 no-underline group mt-1
+                  ${
+                    isActive(profilePath)
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
+                  }`}
+              >
+                <User
+                  size={17}
+                  className={
+                    isActive(profilePath)
+                      ? "text-blue-600"
+                      : "text-slate-400 group-hover:text-slate-600"
+                  }
+                />
+                <span className="text-sm font-medium">Profile</span>
+                {isActive(profilePath) && (
+                  <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500" />
+                )}
+              </Link>
+            );
+          })()}
         </nav>
 
         {/* Logout */}
