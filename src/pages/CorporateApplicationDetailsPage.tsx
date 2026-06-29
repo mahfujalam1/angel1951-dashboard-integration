@@ -1,29 +1,48 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Tag, Typography, Space, Modal, Form, Input, message, Skeleton, Divider } from 'antd';
-import { ChevronLeft, CheckCircle, XCircle, Clock, Mail, Phone, User, Building, Shield, Globe, Briefcase } from 'lucide-react';
-import Card from '../components/ui/Card';
-import { useGetCorporateApplicationsQuery, useReviewCorporateApplicationMutation } from '../redux/api/adminApi';
-
-const { Title, Text } = Typography;
+import { Button, Modal, Form, Input, message, Select } from 'antd';
+import { Shield, Pencil } from 'lucide-react';
+import {
+  useGetCorporateApplicationByIdQuery,
+  useReviewCorporateApplicationMutation,
+  useUpdateCorporateApplicationMutation,
+} from '../redux/api/adminApi';
+import {
+  APPLICATION_STATUS_OPTIONS,
+  formatDetailDate,
+  isAcceptedStatus,
+  isPendingStatus,
+  isRejectedStatus,
+  normalizeStatus,
+} from '../utils/applicationHelpers';
+import {
+  ApplicationLoading,
+  ApplicationNotFound,
+  ApplicationPageHeader,
+  DetailField,
+  DetailGrid,
+  DetailLink,
+  DetailSection,
+  DetailTags,
+} from '../components/applications/ApplicationView';
 
 const CorporateApplicationDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: appsRes, isLoading } = useGetCorporateApplicationsQuery({});
+  const { data: appRes, isLoading, isError } = useGetCorporateApplicationByIdQuery(id!, { skip: !id });
   const [reviewApplication, { isLoading: isReviewing }] = useReviewCorporateApplicationMutation();
+  const [updateApplication, { isLoading: isUpdating }] = useUpdateCorporateApplicationMutation();
 
   const [reviewModal, setReviewModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [form] = Form.useForm();
+  const [editForm] = Form.useForm();
 
-  const application = appsRes?.data?.find((app: any) => app.id === id);
+  const application = appRes?.data;
 
-  const handleReview = async (values: any) => {
+  const handleReview = async (values: { status: string; notes?: string }) => {
     try {
-      const res = await reviewApplication({
-        id: id!,
-        data: values,
-      }).unwrap();
+      const res = await reviewApplication({ id: id!, data: values }).unwrap();
       if (res.success) {
         message.success('Corporate application reviewed successfully!');
         setReviewModal(false);
@@ -34,171 +53,181 @@ const CorporateApplicationDetailsPage: React.FC = () => {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center"><Skeleton active /></div>;
-  if (!application) return <div className="p-8 text-center"><Title level={4}>Application not found</Title><Button onClick={() => navigate(-1)}>Go Back</Button></div>;
+  const openEditModal = () => {
+    if (!application) return;
+    editForm.setFieldsValue({
+      companyName: application.companyName,
+      tradingName: application.tradingName,
+      regNo: application.regNo,
+      country: application.country,
+      address: application.address,
+      yearsInOperation: application.yearsInOperation,
+      contactName: application.contactName,
+      contactPosition: application.contactPosition,
+      contactPhone: application.contactPhone,
+      contactEmail: application.contactEmail,
+      website: application.website,
+      businessNature: application.businessNature,
+      countriesOperateFrom: application.countriesOperateFrom,
+      countriesShipTo: application.countriesShipTo,
+      cargoTypes: application.cargoTypes,
+      estimatedMonthlyVolume: application.estimatedMonthlyVolume,
+      servicesRequired: application.servicesRequired,
+      status: normalizeStatus(application.status),
+      rejectionNotes: application.rejectionNotes || application.notes,
+    });
+    setEditModal(true);
+  };
 
-  const statusColor = application.status === 'Accepted' ? 'green' : application.status === 'Rejected' ? 'red' : 'gold';
+  const handleUpdate = async (values: any) => {
+    try {
+      const res = await updateApplication({ id: id!, data: values }).unwrap();
+      if (res.success) {
+        message.success('Application updated successfully!');
+        setEditModal(false);
+      }
+    } catch (err: any) {
+      message.error(err?.data?.message || 'Failed to update application');
+    }
+  };
+
+  if (isLoading) return <ApplicationLoading />;
+  if (isError || !application) return <ApplicationNotFound onBack={() => navigate(-1)} />;
+
+  const displayStatus = normalizeStatus(application.status);
+  const rejectionNotes = application.rejectionNotes || application.notes;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Space size="middle">
-          <Button icon={<ChevronLeft size={16} />} onClick={() => navigate(-1)}>Back</Button>
-          <Title level={4} style={{ margin: 0, fontFamily: 'Sora, sans-serif' }}>Corporate Application: {application.companyName}</Title>
-          <Tag color={statusColor} className="px-3 py-1 font-bold uppercase">{application.status}</Tag>
-        </Space>
-        {application.status === 'PENDING' && (
-          <Button type="primary" size="large" onClick={() => setReviewModal(true)}>Review Application</Button>
-        )}
-      </div>
+      <ApplicationPageHeader
+        title="View Application"
+        subtitle={`Corporate Partner · ${application.companyName || 'Application'}`}
+        status={application.status}
+        onBack={() => navigate(-1)}
+        actions={
+          <>
+            {isPendingStatus(application.status) && (
+              <Button type="primary" size="large" onClick={() => setReviewModal(true)}>
+                Review Application
+              </Button>
+            )}
+            <Button icon={<Pencil size={16} />} size="large" onClick={openEditModal}>
+              Edit Application
+            </Button>
+          </>
+        }
+      />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
-          <Card title="Company Information">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 p-2">
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <Building size={20} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Legal Entity</Text>
-                  <Text strong className="text-base">{application.companyName}</Text>
-                  <div className="text-xs text-slate-400">Trading as: {application.tradingName}</div>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center shrink-0">
-                  <Briefcase size={20} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Registration</Text>
-                  <Text strong className="text-base">{application.regNo}</Text>
-                  <div className="text-xs text-slate-400">Country: {application.country}</div>
-                </div>
-              </div>
-              <div className="flex gap-4 col-span-2">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center shrink-0">
-                  <Globe size={20} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Business Nature</Text>
-                  <div className="flex gap-1 flex-wrap mt-1">
-                    {application.businessNature?.map((n: string) => <Tag key={n} color="blue">{n}</Tag>)}
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <Divider />
-            
-            <Title level={5} className="mb-4">Logistics & Supply Chain</Title>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 p-2">
-              <div>
-                <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Shipping Routes</Text>
-                <div className="space-y-1">
-                  <Text className="text-xs block">From: <Text strong>{application.countriesOperateFrom}</Text></Text>
-                  <Text className="text-xs block">To: <Text strong>{application.countriesShipTo}</Text></Text>
-                </div>
-              </div>
-              <div>
-                <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Cargo & Volume</Text>
-                <div className="space-y-1">
-                  <Text className="text-xs block">Vol: <Text strong>{application.estimatedMonthlyVolume}</Text></Text>
-                  <Text className="text-xs block">Cargo: <Text strong>{application.cargoTypes?.join(', ')}</Text></Text>
-                </div>
-              </div>
-              <div className="col-span-2">
-                <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Services Required</Text>
-                <Text className="text-sm">{application.servicesRequired}</Text>
-              </div>
-            </div>
-          </Card>
+          <DetailSection title="Company Information">
+            <DetailGrid>
+              <DetailField label="Company Name" value={application.companyName} />
+              <DetailField label="Trading Name" value={application.tradingName} />
+              <DetailField label="Registration No." value={application.regNo} />
+              <DetailField label="Country" value={application.country} />
+              <DetailField label="Years in Operation" value={application.yearsInOperation} />
+              <DetailField label="Website" value={<DetailLink href={application.website} />} />
+              <DetailField label="Address" value={application.address} fullWidth />
+            </DetailGrid>
+          </DetailSection>
 
-          <Card title="Company Website">
-             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                <a href={application.website} target="_blank" rel="noreferrer" className="text-blue-600 font-bold flex items-center gap-2">
-                  <Globe size={16} /> {application.website}
-                </a>
-             </div>
-          </Card>
+          <DetailSection title="Contact Person">
+            <DetailGrid>
+              <DetailField label="Contact Name" value={application.contactName} />
+              <DetailField label="Contact Position" value={application.contactPosition} />
+              <DetailField label="Contact Email" value={application.contactEmail} />
+              <DetailField label="Contact Phone" value={application.contactPhone} />
+            </DetailGrid>
+          </DetailSection>
+
+          <DetailSection title="Business & Logistics">
+            <DetailGrid>
+              <DetailField label="Business Nature" value={<DetailTags items={application.businessNature} />} fullWidth />
+              <DetailField label="Countries Operate From" value={application.countriesOperateFrom} />
+              <DetailField label="Countries Ship To" value={application.countriesShipTo} />
+              <DetailField label="Estimated Monthly Volume" value={application.estimatedMonthlyVolume} />
+              <DetailField label="Cargo Types" value={<DetailTags items={application.cargoTypes} />} fullWidth />
+              <DetailField label="Services Required" value={application.servicesRequired} fullWidth />
+            </DetailGrid>
+          </DetailSection>
         </div>
 
         <div className="space-y-6">
-          <Card title="Contact Person">
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                  <User size={24} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">{application.contactPosition || 'Authorized Person'}</Text>
-                  <Text strong className="text-lg">{application.contactName}</Text>
-                </div>
-              </div>
-              
-              <div className="space-y-4 pt-4 border-t border-slate-50">
-                <div className="flex items-center gap-3">
-                  <Mail size={16} className="text-slate-400" />
-                  <Text className="text-sm">{application.contactEmail}</Text>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Phone size={16} className="text-slate-400" />
-                  <Text className="text-sm">{application.contactPhone}</Text>
-                </div>
-              </div>
-            </div>
-          </Card>
+          <DetailSection title="Application Status">
+            <DetailGrid>
+              <DetailField label="Status" value={displayStatus} />
+              <DetailField label="Submitted" value={formatDetailDate(application.createdAt)} />
+              <DetailField label="Last Updated" value={formatDetailDate(application.updatedAt)} />
+              <DetailField label="Rejection Notes" value={rejectionNotes} fullWidth />
+            </DetailGrid>
+          </DetailSection>
 
-          <Card title="Review Actions">
-             <div className="space-y-4">
-                <div className="flex gap-3">
-                   <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
-                      <Clock size={14} />
-                   </div>
-                   <div>
-                      <Text className="text-xs font-bold block">Application Submitted</Text>
-                      <Text className="text-[10px] text-slate-400">{new Date(application.createdAt).toLocaleString()}</Text>
-                   </div>
-                </div>
-                {application.status !== 'PENDING' && (
-                   <div className="flex gap-3 pt-4 border-t border-slate-50">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${application.status === 'Accepted' ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'}`}>
-                         {application.status === 'Accepted' ? <CheckCircle size={14} /> : <XCircle size={14} />}
-                      </div>
-                      <div>
-                         <Text className="text-xs font-bold block">Application Reviewed</Text>
-                         <Text className="text-[10px] text-slate-400">Status: {application.status}</Text>
-                         {application.notes && <div className="mt-2 text-xs italic text-slate-500 bg-slate-50 p-2 rounded">Note: {application.notes}</div>}
-                      </div>
-                   </div>
-                )}
-             </div>
-          </Card>
+          {!isPendingStatus(application.status) && (
+            <div
+              className={`rounded-2xl border p-5 ${
+                isAcceptedStatus(application.status)
+                  ? 'bg-emerald-50 border-emerald-100'
+                  : isRejectedStatus(application.status)
+                    ? 'bg-red-50 border-red-100'
+                    : 'bg-slate-50 border-slate-100'
+              }`}
+            >
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Decision</p>
+              <p className="text-lg font-bold text-slate-800">{displayStatus}</p>
+              {rejectionNotes && (
+                <p className="mt-3 text-sm text-slate-600 italic">{rejectionNotes}</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Review Modal */}
       <Modal
         title={<div className="flex items-center gap-2"><Shield size={18} className="text-blue-600" /> Review Application</div>}
         open={reviewModal}
         onCancel={() => setReviewModal(false)}
         footer={null}
         centered
-        width={400}
+        width={420}
       >
         <Form form={form} layout="vertical" onFinish={handleReview} initialValues={{ status: 'Accepted' }}>
           <Form.Item name="status" label="Decision" rules={[{ required: true }]}>
-            <select className="w-full h-11 border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-              <option value="Accepted">Accept Partner</option>
-              <option value="Rejected">Reject Partner</option>
-            </select>
+            <Select options={APPLICATION_STATUS_OPTIONS.filter((o) => o.value !== 'Pending')} />
           </Form.Item>
           <Form.Item name="notes" label="Internal Notes">
-            <Input.TextArea rows={4} placeholder="Note for rejection or approval details..." style={{ borderRadius: 12 }} />
+            <Input.TextArea rows={4} placeholder="Note for rejection or approval details..." />
           </Form.Item>
-          <Button type="primary" htmlType="submit" loading={isReviewing} block size="large" style={{ height: 48, borderRadius: 12 }}>
+          <Button type="primary" htmlType="submit" loading={isReviewing} block size="large">
             Confirm Review
           </Button>
+        </Form>
+      </Modal>
+
+      <Modal title="Edit Corporate Application" open={editModal} onCancel={() => setEditModal(false)} footer={null} centered width={640}>
+        <Form form={editForm} layout="vertical" onFinish={handleUpdate}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Form.Item name="companyName" label="Company Name" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="status" label="Status"><Select options={APPLICATION_STATUS_OPTIONS} /></Form.Item>
+            <Form.Item name="tradingName" label="Trading Name"><Input /></Form.Item>
+            <Form.Item name="regNo" label="Registration No"><Input /></Form.Item>
+            <Form.Item name="country" label="Country"><Input /></Form.Item>
+            <Form.Item name="yearsInOperation" label="Years in Operation"><Input /></Form.Item>
+            <Form.Item name="address" label="Address" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="website" label="Website" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="contactName" label="Contact Name"><Input /></Form.Item>
+            <Form.Item name="contactPosition" label="Contact Position"><Input /></Form.Item>
+            <Form.Item name="contactEmail" label="Contact Email"><Input /></Form.Item>
+            <Form.Item name="contactPhone" label="Contact Phone"><Input /></Form.Item>
+            <Form.Item name="estimatedMonthlyVolume" label="Estimated Monthly Volume"><Input /></Form.Item>
+            <Form.Item name="businessNature" label="Business Nature"><Select mode="tags" /></Form.Item>
+            <Form.Item name="cargoTypes" label="Cargo Types"><Select mode="tags" /></Form.Item>
+            <Form.Item name="countriesOperateFrom" label="Countries Operate From" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="countriesShipTo" label="Countries Ship To" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="servicesRequired" label="Services Required" className="md:col-span-2"><Input.TextArea rows={3} /></Form.Item>
+            <Form.Item name="rejectionNotes" label="Rejection Notes" className="md:col-span-2"><Input.TextArea rows={3} /></Form.Item>
+          </div>
+          <Button type="primary" htmlType="submit" loading={isUpdating} block size="large">Save Changes</Button>
         </Form>
       </Modal>
     </div>

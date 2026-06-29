@@ -220,12 +220,12 @@ const LoginPage: React.FC = () => {
                   <div>
                     <p className="text-[10px] text-blue-400 font-bold uppercase">Admin</p>
                     <p className="text-[11px] text-blue-500">📧 admin@buanenterprise.com</p>
-                    <p className="text-[11px] text-blue-500">🔒 admin123</p>
+                    <p className="text-[11px] text-blue-500">🔒 admin1234</p>
                   </div>
                   <div>
                     <p className="text-[10px] text-blue-400 font-bold uppercase">Branch</p>
                     <p className="text-[11px] text-blue-500">📧 branch@buanenterprise.com</p>
-                    <p className="text-[11px] text-blue-500">🔒 branch123</p>
+                    <p className="text-[11px] text-blue-500">🔒 branch1234</p>
                   </div>
                 </div>
               </div>
@@ -235,7 +235,7 @@ const LoginPage: React.FC = () => {
                 onFinish={onLoginFinish}
                 initialValues={{
                   email: "admin@buanenterprise.com",
-                  password: "admin123",
+                  password: "admin1234",
                   remember: true,
                 }}
               >

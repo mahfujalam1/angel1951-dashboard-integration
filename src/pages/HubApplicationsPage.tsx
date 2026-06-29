@@ -1,21 +1,34 @@
 import React, { useState } from 'react';
-import { Table, Tag, Button, Modal, Form, Input, message, Space, Typography } from 'antd';
-import { Eye, CheckCircle, XCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Table, Tag, Button, Modal, Form, Input, Select, message, Space, Typography } from 'antd';
+import { Eye } from 'lucide-react';
 import Card from '../components/ui/Card';
-import { useGetHubProviderApplicationsQuery, useReviewHubProviderApplicationMutation } from '../redux/api/adminApi';
+import {
+  useGetHubProviderApplicationsQuery,
+  useReviewHubProviderApplicationMutation,
+} from '../redux/api/adminApi';
+import {
+  APPLICATION_STATUS_OPTIONS,
+  getPaginatedList,
+  getStatusTagColor,
+  isPendingStatus,
+  normalizeStatus,
+} from '../utils/applicationHelpers';
 
 const { Text } = Typography;
 
 const HubApplicationsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useGetHubProviderApplicationsQuery({ page, limit: 10 });
+  const { data, isLoading, isError } = useGetHubProviderApplicationsQuery({ page, limit: 10 });
   const [reviewApplication, { isLoading: isReviewing }] = useReviewHubProviderApplicationMutation();
 
-  const [detailModal, setDetailModal] = useState<any>(null);
   const [reviewModal, setReviewModal] = useState<any>(null);
   const [form] = Form.useForm();
 
-  const handleReview = async (values: any) => {
+  const { list, total } = getPaginatedList(data);
+
+  const handleReview = async (values: { status: string; notes?: string }) => {
     try {
       const res = await reviewApplication({
         id: reviewModal.id,
@@ -24,7 +37,6 @@ const HubApplicationsPage: React.FC = () => {
       if (res.success) {
         message.success('Application reviewed successfully!');
         setReviewModal(null);
-        setDetailModal(null);
         form.resetFields();
       }
     } catch (err: any) {
@@ -58,29 +70,22 @@ const HubApplicationsPage: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => {
-        let color = 'gold';
-        if (status === 'Accepted') color = 'green';
-        if (status === 'Rejected') color = 'red';
-        return <Tag color={color}>{status?.toUpperCase()}</Tag>;
-      },
+      render: (status: string) => (
+        <Tag color={getStatusTagColor(status)}>{normalizeStatus(status)}</Tag>
+      ),
     },
     {
       title: 'Action',
       key: 'action',
       render: (_: any, record: any) => (
         <Space>
-          <Button 
-            type="text" 
-            icon={<Eye size={16} />} 
-            onClick={() => setDetailModal(record)}
+          <Button
+            type="text"
+            icon={<Eye size={16} />}
+            onClick={() => navigate(`/hub-applications/${record.id}`)}
           />
-          {record.status === 'PENDING' && (
-            <Button 
-              type="primary" 
-              size="small" 
-              onClick={() => setReviewModal(record)}
-            >
+          {isPendingStatus(record.status) && (
+            <Button type="primary" size="small" onClick={() => setReviewModal(record)}>
               Review
             </Button>
           )}
@@ -92,70 +97,35 @@ const HubApplicationsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <Card title="Hub Provider Applications">
+        {isError && (
+          <div className="mb-4 text-sm text-red-500">Failed to load hub provider applications.</div>
+        )}
         <Table
-          dataSource={data?.data || []}
+          dataSource={list}
           columns={columns}
           loading={isLoading}
           rowKey="id"
           pagination={{
             current: page,
             pageSize: 10,
-            total: data?.meta?.total || 0,
+            total,
             onChange: (p) => setPage(p),
           }}
         />
       </Card>
 
-      {/* Detail Modal */}
-      <Modal
-        title="Application Details"
-        open={!!detailModal}
-        onCancel={() => setDetailModal(null)}
-        footer={[
-          <Button key="close" onClick={() => setDetailModal(null)}>Close</Button>,
-          detailModal?.status === 'PENDING' && (
-            <Button key="review" type="primary" onClick={() => setReviewModal(detailModal)}>Review Application</Button>
-          )
-        ]}
-        width={700}
-      >
-        {detailModal && (
-          <div className="grid grid-cols-2 gap-4 py-4">
-            <div><Text type="secondary">Shop Name:</Text> <Text strong>{detailModal.shopName}</Text></div>
-            <div><Text type="secondary">Owner Name:</Text> <Text strong>{detailModal.ownerName}</Text></div>
-            <div><Text type="secondary">Email:</Text> <Text strong>{detailModal.email}</Text></div>
-            <div><Text type="secondary">Phone:</Text> <Text strong>{detailModal.contact}</Text></div>
-            <div><Text type="secondary">Address:</Text> <Text strong>{detailModal.address}</Text></div>
-            <div><Text type="secondary">Landmark:</Text> <Text strong>{detailModal.landmark}</Text></div>
-            <div><Text type="secondary">City/State:</Text> <Text strong>{detailModal.cityOrState}</Text></div>
-            <div><Text type="secondary">CCTV:</Text> <Tag>{detailModal.cctvAvailable ? 'YES' : 'NO'}</Tag></div>
-            <div className="col-span-2">
-                <Text type="secondary">Operating Days:</Text> 
-                <div className="mt-1 flex gap-1 flex-wrap">
-                    {detailModal.operatingDays?.map((d: string) => <Tag key={d}>{d}</Tag>)}
-                </div>
-            </div>
-            <div className="col-span-2">
-                <Text type="secondary">Comments:</Text>
-                <div className="mt-1 p-3 bg-slate-50 rounded-lg">{detailModal.comments || 'No comments'}</div>
-            </div>
-          </div>
-        )}
-      </Modal>
-
-      {/* Review Modal */}
       <Modal
         title="Review Application"
         open={!!reviewModal}
-        onCancel={() => setReviewModal(null)}
+        onCancel={() => {
+          setReviewModal(null);
+          form.resetFields();
+        }}
         footer={null}
       >
-        <Form form={form} layout="vertical" onFinish={handleReview}>
+        <Form form={form} layout="vertical" onFinish={handleReview} initialValues={{ status: 'Accepted' }}>
           <Form.Item name="status" label="Status" rules={[{ required: true }]}>
-            <select className="w-full h-10 border rounded-md px-3">
-              <option value="Accepted">Accept</option>
-              <option value="Rejected">Reject</option>
-            </select>
+            <Select options={APPLICATION_STATUS_OPTIONS.filter((o) => o.value !== 'Pending')} />
           </Form.Item>
           <Form.Item name="notes" label="Notes">
             <Input.TextArea rows={4} placeholder="Reason for acceptance/rejection..." />

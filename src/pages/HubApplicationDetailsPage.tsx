@@ -1,29 +1,48 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Tag, Typography, Space, Modal, Form, Input, message, Skeleton, Divider } from 'antd';
-import { ChevronLeft, CheckCircle, XCircle, Clock, MapPin, Phone, Mail, User, Building, Shield } from 'lucide-react';
-import Card from '../components/ui/Card';
-import { useGetHubProviderApplicationsQuery, useReviewHubProviderApplicationMutation } from '../redux/api/adminApi';
-
-const { Title, Text } = Typography;
+import { Button, Modal, Form, Input, message, Select, Switch, InputNumber } from 'antd';
+import { Shield, Pencil } from 'lucide-react';
+import {
+  useGetHubProviderApplicationByIdQuery,
+  useReviewHubProviderApplicationMutation,
+  useUpdateHubProviderApplicationMutation,
+} from '../redux/api/adminApi';
+import {
+  APPLICATION_STATUS_OPTIONS,
+  formatDetailBoolean,
+  formatDetailDate,
+  isAcceptedStatus,
+  isPendingStatus,
+  isRejectedStatus,
+  normalizeStatus,
+} from '../utils/applicationHelpers';
+import {
+  ApplicationLoading,
+  ApplicationNotFound,
+  ApplicationPageHeader,
+  DetailField,
+  DetailGrid,
+  DetailSection,
+  DetailTags,
+} from '../components/applications/ApplicationView';
 
 const HubApplicationDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: appsRes, isLoading } = useGetHubProviderApplicationsQuery({});
+  const { data: appRes, isLoading, isError } = useGetHubProviderApplicationByIdQuery(id!, { skip: !id });
   const [reviewApplication, { isLoading: isReviewing }] = useReviewHubProviderApplicationMutation();
+  const [updateApplication, { isLoading: isUpdating }] = useUpdateHubProviderApplicationMutation();
 
   const [reviewModal, setReviewModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
   const [form] = Form.useForm();
+  const [editForm] = Form.useForm();
 
-  const application = appsRes?.data?.find((app: any) => app.id === id);
+  const application = appRes?.data;
 
-  const handleReview = async (values: any) => {
+  const handleReview = async (values: { status: string; notes?: string }) => {
     try {
-      const res = await reviewApplication({
-        id: id!,
-        data: values,
-      }).unwrap();
+      const res = await reviewApplication({ id: id!, data: values }).unwrap();
       if (res.success) {
         message.success('Application reviewed successfully!');
         setReviewModal(false);
@@ -34,173 +53,197 @@ const HubApplicationDetailsPage: React.FC = () => {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center"><Skeleton active /></div>;
-  if (!application) return <div className="p-8 text-center"><Title level={4}>Application not found</Title><Button onClick={() => navigate(-1)}>Go Back</Button></div>;
+  const openEditModal = () => {
+    if (!application) return;
+    editForm.setFieldsValue({
+      shopName: application.shopName,
+      address: application.address,
+      landmark: application.landmark,
+      cityOrState: application.cityOrState,
+      contact: application.contact,
+      email: application.email,
+      cctvAvailable: application.cctvAvailable,
+      ownerName: application.ownerName,
+      ownerEmail: application.ownerEmail,
+      prefferedContactMethod: application.prefferedContactMethod,
+      operatingDays: application.operatingDays,
+      email_active_window_from: application.email_active_window_from,
+      email_active_window_to: application.email_active_window_to,
+      daily_minimum_staff: application.daily_minimum_staff,
+      daily_maximum_staff: application.daily_maximum_staff,
+      daily_foot_traffic: application.daily_foot_traffic,
+      handledDeliveryServiceBefore: application.handledDeliveryServiceBefore,
+      atLeastSixMonthCommitted: application.atLeastSixMonthCommitted,
+      comments: application.comments,
+      status: normalizeStatus(application.status),
+      rejection_notes: application.rejection_notes || application.notes,
+    });
+    setEditModal(true);
+  };
 
-  const statusColor = application.status === 'Accepted' ? 'green' : application.status === 'Rejected' ? 'red' : 'gold';
+  const handleUpdate = async (values: any) => {
+    try {
+      const res = await updateApplication({ id: id!, data: values }).unwrap();
+      if (res.success) {
+        message.success('Application updated successfully!');
+        setEditModal(false);
+      }
+    } catch (err: any) {
+      message.error(err?.data?.message || 'Failed to update application');
+    }
+  };
+
+  if (isLoading) return <ApplicationLoading />;
+  if (isError || !application) return <ApplicationNotFound onBack={() => navigate(-1)} />;
+
+  const displayStatus = normalizeStatus(application.status);
+  const rejectionNotes = application.rejection_notes || application.notes;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <Space size="middle">
-          <Button icon={<ChevronLeft size={16} />} onClick={() => navigate(-1)}>Back</Button>
-          <Title level={4} style={{ margin: 0, fontFamily: 'Sora, sans-serif' }}>Hub Application: {application.shopName}</Title>
-          <Tag color={statusColor} className="px-3 py-1 font-bold uppercase">{application.status}</Tag>
-        </Space>
-        {application.status === 'PENDING' && (
-          <Button type="primary" size="large" onClick={() => setReviewModal(true)}>Review Application</Button>
-        )}
-      </div>
+      <ApplicationPageHeader
+        title="View Application"
+        subtitle={`Hub Provider · ${application.shopName || 'Application'}`}
+        status={application.status}
+        onBack={() => navigate(-1)}
+        actions={
+          <>
+            {isPendingStatus(application.status) && (
+              <Button type="primary" size="large" onClick={() => setReviewModal(true)}>
+                Review Application
+              </Button>
+            )}
+            <Button icon={<Pencil size={16} />} size="large" onClick={openEditModal}>
+              Edit Application
+            </Button>
+          </>
+        }
+      />
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
-          <Card title="Business Information">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 p-2">
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <Building size={20} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Shop Name</Text>
-                  <Text strong className="text-base">{application.shopName}</Text>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center shrink-0">
-                  <MapPin size={20} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Location</Text>
-                  <Text strong className="text-base">{application.cityOrState}</Text>
-                </div>
-              </div>
-              <div className="flex gap-4 col-span-2">
-                <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center shrink-0">
-                  <MapPin size={20} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Full Address</Text>
-                  <Text strong className="text-base">{application.address}</Text>
-                  <div className="text-xs text-slate-400 mt-1">Landmark: {application.landmark}</div>
-                </div>
-              </div>
-            </div>
-            
-            <Divider />
-            
-            <Title level={5} className="mb-4">Operational Details</Title>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12 p-2">
-              <div>
-                <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-2">Operating Days</Text>
-                <div className="flex gap-1 flex-wrap">
-                  {application.operatingDays?.map((d: string) => <Tag key={d} color="blue">{d}</Tag>)}
-                </div>
-              </div>
-              <div>
-                <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-2">Staffing & Traffic</Text>
-                <Space direction="vertical" size={2}>
-                  <Text className="text-sm">Daily Staff: <Text strong>{application.daily_minimum_staff} - {application.daily_maximum_staff}</Text></Text>
-                  <Text className="text-sm">Foot Traffic: <Text strong>{application.daily_foot_traffic}</Text></Text>
-                </Space>
-              </div>
-              <div>
-                <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-2">Security</Text>
-                <Tag color={application.cctvAvailable ? 'green' : 'red'}>
-                  {application.cctvAvailable ? 'CCTV SECURED' : 'NO CCTV'}
-                </Tag>
-              </div>
-              <div>
-                <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-2">Experience</Text>
-                <Tag color={application.handledDeliveryServiceBefore ? 'green' : 'blue'}>
-                  {application.handledDeliveryServiceBefore ? 'HAS LOGISTICS EXP' : 'NEW TO LOGISTICS'}
-                </Tag>
-              </div>
-            </div>
-          </Card>
+          <DetailSection title="Shop Information">
+            <DetailGrid>
+              <DetailField label="Shop Name" value={application.shopName} />
+              <DetailField label="City / State" value={application.cityOrState} />
+              <DetailField label="Address" value={application.address} fullWidth />
+              <DetailField label="Landmark" value={application.landmark} fullWidth />
+              <DetailField label="Contact Phone" value={application.contact} />
+              <DetailField label="Shop Email" value={application.email} />
+            </DetailGrid>
+          </DetailSection>
 
-          <Card title="Applicant Comments">
-             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 min-h-[100px]">
-                {application.comments || "No comments provided."}
-             </div>
-          </Card>
+          <DetailSection title="Owner Details">
+            <DetailGrid>
+              <DetailField label="Owner Name" value={application.ownerName} />
+              <DetailField label="Owner Email" value={application.ownerEmail} />
+              <DetailField label="Preferred Contact Method" value={application.prefferedContactMethod} />
+            </DetailGrid>
+          </DetailSection>
+
+          <DetailSection title="Operational Details">
+            <DetailGrid>
+              <DetailField label="Operating Days" value={<DetailTags items={application.operatingDays} />} fullWidth />
+              <DetailField label="Daily Min Staff" value={application.daily_minimum_staff} />
+              <DetailField label="Daily Max Staff" value={application.daily_maximum_staff} />
+              <DetailField label="Daily Foot Traffic" value={application.daily_foot_traffic} />
+              <DetailField label="CCTV Available" value={formatDetailBoolean(application.cctvAvailable)} />
+              <DetailField label="Handled Delivery Before" value={formatDetailBoolean(application.handledDeliveryServiceBefore)} />
+              <DetailField label="6-Month Commitment" value={formatDetailBoolean(application.atLeastSixMonthCommitted)} />
+              <DetailField label="Email Active Window From" value={formatDetailDate(application.email_active_window_from)} />
+              <DetailField label="Email Active Window To" value={formatDetailDate(application.email_active_window_to)} />
+              <DetailField label="Comments" value={application.comments} fullWidth />
+            </DetailGrid>
+          </DetailSection>
+
+          {application.image_urls?.length > 0 && (
+            <DetailSection title="Shop Images">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {application.image_urls.map((url: string, i: number) => (
+                  <a key={i} href={url} target="_blank" rel="noreferrer" className="block rounded-xl overflow-hidden border border-slate-100">
+                    <img src={url} alt={`Shop ${i + 1}`} className="w-full h-32 object-cover" />
+                  </a>
+                ))}
+              </div>
+            </DetailSection>
+          )}
         </div>
 
         <div className="space-y-6">
-          <Card title="Owner Details">
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                  <User size={24} />
-                </div>
-                <div>
-                  <Text type="secondary" className="text-[10px] uppercase font-bold tracking-wider block mb-1">Owner Name</Text>
-                  <Text strong className="text-lg">{application.ownerName}</Text>
-                </div>
-              </div>
-              
-              <div className="space-y-4 pt-4 border-t border-slate-50">
-                <div className="flex items-center gap-3">
-                  <Mail size={16} className="text-slate-400" />
-                  <Text className="text-sm">{application.ownerEmail}</Text>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Phone size={16} className="text-slate-400" />
-                  <Text className="text-sm">{application.contact}</Text>
-                </div>
-              </div>
-            </div>
-          </Card>
+          <DetailSection title="Application Status">
+            <DetailGrid>
+              <DetailField label="Status" value={displayStatus} />
+              <DetailField label="Submitted" value={formatDetailDate(application.createdAt)} />
+              <DetailField label="Last Updated" value={formatDetailDate(application.updatedAt)} />
+              <DetailField label="Rejection Notes" value={rejectionNotes} fullWidth />
+            </DetailGrid>
+          </DetailSection>
 
-          <Card title="Application History">
-             <div className="space-y-4">
-                <div className="flex gap-3">
-                   <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
-                      <Clock size={14} />
-                   </div>
-                   <div>
-                      <Text className="text-xs font-bold block">Application Submitted</Text>
-                      <Text className="text-[10px] text-slate-400">{new Date(application.createdAt).toLocaleString()}</Text>
-                   </div>
-                </div>
-                {application.status !== 'PENDING' && (
-                   <div className="flex gap-3 pt-4 border-t border-slate-50">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${application.status === 'Accepted' ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'}`}>
-                         {application.status === 'Accepted' ? <CheckCircle size={14} /> : <XCircle size={14} />}
-                      </div>
-                      <div>
-                         <Text className="text-xs font-bold block">Application Reviewed</Text>
-                         <Text className="text-[10px] text-slate-400">Status: {application.status}</Text>
-                         {application.notes && <div className="mt-2 text-xs italic text-slate-500 bg-slate-50 p-2 rounded">Note: {application.notes}</div>}
-                      </div>
-                   </div>
-                )}
-             </div>
-          </Card>
+          {!isPendingStatus(application.status) && (
+            <div
+              className={`rounded-2xl border p-5 ${
+                isAcceptedStatus(application.status)
+                  ? 'bg-emerald-50 border-emerald-100'
+                  : isRejectedStatus(application.status)
+                    ? 'bg-red-50 border-red-100'
+                    : 'bg-slate-50 border-slate-100'
+              }`}
+            >
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Decision</p>
+              <p className="text-lg font-bold text-slate-800">{displayStatus}</p>
+              {rejectionNotes && (
+                <p className="mt-3 text-sm text-slate-600 italic">{rejectionNotes}</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Review Modal */}
       <Modal
         title={<div className="flex items-center gap-2"><Shield size={18} className="text-blue-600" /> Review Application</div>}
         open={reviewModal}
         onCancel={() => setReviewModal(false)}
         footer={null}
         centered
-        width={400}
+        width={420}
       >
         <Form form={form} layout="vertical" onFinish={handleReview} initialValues={{ status: 'Accepted' }}>
           <Form.Item name="status" label="Decision" rules={[{ required: true }]}>
-            <select className="w-full h-11 border-slate-200 rounded-xl px-4 focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-              <option value="Accepted">Accept Application</option>
-              <option value="Rejected">Reject Application</option>
-            </select>
+            <Select options={APPLICATION_STATUS_OPTIONS.filter((o) => o.value !== 'Pending')} />
           </Form.Item>
           <Form.Item name="notes" label="Review Notes">
-            <Input.TextArea rows={4} placeholder="Internal notes or reason for rejection..." style={{ borderRadius: 12 }} />
+            <Input.TextArea rows={4} placeholder="Internal notes or reason for rejection..." />
           </Form.Item>
-          <Button type="primary" htmlType="submit" loading={isReviewing} block size="large" style={{ height: 48, borderRadius: 12 }}>
+          <Button type="primary" htmlType="submit" loading={isReviewing} block size="large">
             Submit Review
           </Button>
+        </Form>
+      </Modal>
+
+      <Modal title="Edit Hub Application" open={editModal} onCancel={() => setEditModal(false)} footer={null} centered width={640}>
+        <Form form={editForm} layout="vertical" onFinish={handleUpdate}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4">
+            <Form.Item name="shopName" label="Shop Name" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="status" label="Status"><Select options={APPLICATION_STATUS_OPTIONS} /></Form.Item>
+            <Form.Item name="cityOrState" label="City / State"><Input /></Form.Item>
+            <Form.Item name="address" label="Address" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="landmark" label="Landmark" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="contact" label="Contact Phone"><Input /></Form.Item>
+            <Form.Item name="email" label="Shop Email"><Input /></Form.Item>
+            <Form.Item name="ownerName" label="Owner Name"><Input /></Form.Item>
+            <Form.Item name="ownerEmail" label="Owner Email"><Input /></Form.Item>
+            <Form.Item name="prefferedContactMethod" label="Preferred Contact Method"><Input /></Form.Item>
+            <Form.Item name="daily_minimum_staff" label="Min Daily Staff"><InputNumber className="w-full" min={0} /></Form.Item>
+            <Form.Item name="daily_maximum_staff" label="Max Daily Staff"><InputNumber className="w-full" min={0} /></Form.Item>
+            <Form.Item name="daily_foot_traffic" label="Daily Foot Traffic" className="md:col-span-2"><Input /></Form.Item>
+            <Form.Item name="operatingDays" label="Operating Days" className="md:col-span-2"><Select mode="tags" /></Form.Item>
+            <Form.Item name="cctvAvailable" label="CCTV Available" valuePropName="checked"><Switch /></Form.Item>
+            <Form.Item name="handledDeliveryServiceBefore" label="Handled Delivery Before" valuePropName="checked"><Switch /></Form.Item>
+            <Form.Item name="atLeastSixMonthCommitted" label="6-Month Commitment" valuePropName="checked"><Switch /></Form.Item>
+            <Form.Item name="comments" label="Comments" className="md:col-span-2"><Input.TextArea rows={3} /></Form.Item>
+            <Form.Item name="rejection_notes" label="Rejection Notes" className="md:col-span-2"><Input.TextArea rows={3} /></Form.Item>
+          </div>
+          <Button type="primary" htmlType="submit" loading={isUpdating} block size="large">Save Changes</Button>
         </Form>
       </Modal>
     </div>
