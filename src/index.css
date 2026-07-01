@@ -4,6 +4,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  button, 
+  [role="button"], 
+  a,
+  select,
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  button:not(.ant-btn),
+  [type='button']:not(.ant-btn),
+  [type='submit']:not(.ant-btn) {
+    border: none;
+    background-color: transparent;
+    outline: none;
+  }
+}
 
 :root {
   --sidebar-bg: #ffffff;

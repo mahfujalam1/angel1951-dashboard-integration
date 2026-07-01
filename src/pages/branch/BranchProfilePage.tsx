@@ -33,7 +33,7 @@ const BranchProfilePage: React.FC = () => {
   const labelClass =
     "block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5";
   const inputClass =
-    "w-full border-none bg-slate-100/50 rounded-lg px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:bg-slate-100 transition-colors";
+    "w-full border-none bg-slate-100/50 rounded px-4 py-2.5 text-sm text-slate-700 focus:outline-none focus:bg-slate-100 transition-colors";
   const readClass = "text-sm font-semibold text-slate-700 py-2";
 
   return (
@@ -55,7 +55,7 @@ const BranchProfilePage: React.FC = () => {
         <Card className="border-none shadow-sm mb-6">
           <div className="flex items-center gap-6 py-2">
             <div className="relative">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-100">
+              <div className="w-20 h-20 rounded bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-md shadow-blue-100">
                 <User size={36} />
               </div>
               <button className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-blue-600 shadow-sm transition-colors">
@@ -83,7 +83,7 @@ const BranchProfilePage: React.FC = () => {
                 <div className="flex gap-2">
                   <Button
                     onClick={() => setEditing(false)}
-                    className="rounded-lg h-9"
+                    className="rounded h-9"
                   >
                     Cancel
                   </Button>
@@ -91,7 +91,7 @@ const BranchProfilePage: React.FC = () => {
                     type="primary"
                     icon={<Save size={14} />}
                     onClick={handleSave}
-                    className="rounded-lg h-9 bg-blue-600"
+                    className="rounded h-9 bg-blue-600"
                   >
                     Save Changes
                   </Button>
@@ -99,7 +99,7 @@ const BranchProfilePage: React.FC = () => {
               ) : (
                 <Button
                   onClick={() => setEditing(true)}
-                  className="rounded-lg h-9"
+                  className="rounded h-9"
                 >
                   Edit Profile
                 </Button>
@@ -204,7 +204,7 @@ const BranchProfilePage: React.FC = () => {
                 Last changed 3 months ago
               </p>
             </div>
-            <Button className="rounded-lg h-9 border-slate-300">
+            <Button className="rounded h-9 border-slate-300">
               Change Password
             </Button>
           </div>

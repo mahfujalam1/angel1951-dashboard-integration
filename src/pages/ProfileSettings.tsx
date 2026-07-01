@@ -100,11 +100,11 @@ const ProfileSettings: React.FC = () => {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded shadow-sm border border-slate-100 overflow-hidden">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 pt-10 pb-20 text-center relative">
           <div className="relative inline-block">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg mx-auto bg-slate-200">
+            <div className="w-24 h-24 rounded-full overflow-hidden border border-white shadow-md mx-auto bg-slate-200">
               {avatarPreview ? (
                 <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
@@ -131,7 +131,7 @@ const ProfileSettings: React.FC = () => {
 
         <div className="px-6 pb-6">
           <div className="-mt-10 mb-6 text-center relative z-10">
-            <div className="bg-white inline-block px-8 py-3 rounded-2xl shadow-lg border border-slate-50">
+            <div className="bg-white inline-block px-8 py-3 rounded shadow-md border border-slate-50">
               <h3 className="font-bold text-slate-800 text-xl mb-0.5" style={{ fontFamily: 'Sora, sans-serif' }}>
                 {profile?.firstName ? `${profile.firstName} ${profile.lastName}` : authUser?.name}
               </h3>

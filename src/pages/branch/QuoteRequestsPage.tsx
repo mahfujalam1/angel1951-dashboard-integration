@@ -163,7 +163,7 @@ const QuoteRequestsPage: React.FC = () => {
           />
           <Input
             placeholder="Search by customer or email..."
-            className="pl-10 h-11 rounded-xl shadow-sm border-none"
+            className="pl-10 h-11 rounded shadow-sm border-none"
           />
         </div>
       </div>
@@ -192,11 +192,11 @@ const QuoteRequestsPage: React.FC = () => {
         }}
         onOk={handleSendBudget}
         okText="Send Proposal"
-        okButtonProps={{ className: "bg-blue-600 rounded-lg" }}
+        okButtonProps={{ className: "bg-blue-600 rounded" }}
       >
         {selectedRequest && (
           <div className="py-4 space-y-5">
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="p-4 bg-slate-50 rounded border border-slate-100">
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
                 Customer
               </p>
@@ -211,7 +211,7 @@ const QuoteRequestsPage: React.FC = () => {
                 Estimated Budget (USD)
               </label>
               <InputNumber
-                className="w-full h-11 rounded-xl flex items-center bg-white"
+                className="w-full h-11 rounded flex items-center bg-white"
                 placeholder="Enter amount"
                 min={0}
                 value={budget}

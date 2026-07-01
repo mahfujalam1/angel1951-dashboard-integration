@@ -30,6 +30,7 @@ const adminNavItems = [
   { key: "hub-applications", label: "Hub Applications", path: "/hub-applications", icon: Building2 },
   { key: "corporate-applications", label: "Corporate Applications", path: "/corporate-applications", icon: Building2 },
   { key: "upgrade-applications", label: "Upgrade Applications", path: "/upgrade-applications", icon: ArrowUpRight },
+  { key: "branches", label: "Branch Management", path: "/branches", icon: Building2 },
   { key: "hubs", label: "Hub Management", path: "/hubs", icon: Building2 },
   { key: "staff", label: "Staff Management", path: "/staff", icon: UserCheck },
   {
@@ -129,7 +130,7 @@ const Sidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
           </div>
           <button
             onClick={onToggle}
-            className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 transition-colors lg:hidden"
+            className="w-7 h-7 flex items-center justify-center rounded hover:bg-slate-100 text-slate-400 transition-colors lg:hidden"
           >
             <X size={16} />
           </button>
@@ -144,7 +145,7 @@ const Sidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
             <Link
               key={key}
               to={path}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 no-underline group
+              className={`flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-150 no-underline group
                 ${
                   isActive(path)
                     ? "bg-blue-50 text-blue-600"
@@ -172,7 +173,7 @@ const Sidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
             return (
               <Link
                 to={profilePath}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 no-underline group mt-1
+                className={`flex items-center gap-3 px-3 py-2.5 rounded transition-all duration-150 no-underline group mt-1
                   ${
                     isActive(profilePath)
                       ? "bg-blue-50 text-blue-600"
@@ -200,7 +201,7 @@ const Sidebar: React.FC<Props> = ({ collapsed, onToggle }) => {
         <div className="px-3 pb-5 pt-3 border-t border-slate-100 flex-shrink-0">
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all text-sm font-medium"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all text-sm font-medium"
           >
             <LogOut size={17} />
             Log Out

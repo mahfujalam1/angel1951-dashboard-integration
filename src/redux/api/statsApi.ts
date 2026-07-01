@@ -21,6 +21,13 @@ export const statsApi = baseApi.injectEndpoints({
         method: "GET",
       }),
     }),
+    getAdminDashboardStats: build.query<TResponse<any>, { year?: number } | void>({
+      query: (params) => ({
+        url: "/admin/dashboard/stats",
+        method: "GET",
+        params: params || undefined,
+      }),
+    }),
   }),
 });
 
@@ -28,4 +35,5 @@ export const {
   useGetShipmentStatsQuery,
   useGetDashboardRequestsQuery,
   useGetGrowthStatsQuery,
+  useGetAdminDashboardStatsQuery,
 } = statsApi;

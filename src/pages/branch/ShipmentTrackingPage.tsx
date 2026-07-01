@@ -46,7 +46,7 @@ const ShipmentTrackingPage: React.FC = () => {
                     <div className="flex flex-col items-center">
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center z-10 ${
                         step.completed ? 'bg-green-500' : 
-                        step.active ? 'bg-white border-4 border-blue-500' : 'bg-white border-2 border-slate-200'
+                        step.active ? 'bg-white border border-blue-500' : 'bg-white border border-slate-200'
                       }`}>
                         {step.completed && <CheckCircle2 size={14} className="text-white" />}
                         {step.active && <div className="w-2 h-2 rounded-full bg-blue-500" />}
@@ -62,7 +62,7 @@ const ShipmentTrackingPage: React.FC = () => {
                       <p className="text-xs text-slate-400 font-medium">{step.date}</p>
                     </div>
                     <div className="ml-auto">
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${step.active ? 'border-blue-500' : 'border-slate-200'}`}>
+                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${step.active ? 'border-blue-500' : 'border-slate-200'}`}>
                             {step.active && <div className="w-2 h-2 rounded-full bg-blue-500" />}
                         </div>
                     </div>
@@ -83,7 +83,7 @@ const ShipmentTrackingPage: React.FC = () => {
                   { label: 'Delivery Confirmation Photo', sub: 'Photo', comingSoon: true }
                 ].map((item, i) => (
                   <div key={i} className="space-y-2">
-                    <div className="relative group rounded-xl overflow-hidden bg-slate-50 border border-slate-100 h-32 flex items-center justify-center">
+                    <div className="relative group rounded overflow-hidden bg-slate-50 border border-slate-100 h-32 flex items-center justify-center">
                       {item.comingSoon ? (
                         <Tag color="blue" className="rounded-full px-4 border-none bg-blue-50 text-blue-600 font-bold">Coming Soon</Tag>
                       ) : (
@@ -112,7 +112,7 @@ const ShipmentTrackingPage: React.FC = () => {
                    <h3 className="text-sm font-bold text-slate-800 mb-1">Receiver Signature</h3>
                    <p className="text-xs text-slate-400 font-medium">Pending</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+                <div className="w-12 h-12 rounded bg-slate-50 border border-slate-100 flex items-center justify-center">
                    <UserCheck size={20} className="text-slate-200" />
                 </div>
               </div>

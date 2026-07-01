@@ -43,8 +43,8 @@ const AnalyticsPage: React.FC = () => {
           { label: 'Active Customers', value: '842', icon: Users, color: 'purple' },
           { label: 'Growth Rate', value: '+12.5%', icon: TrendingUp, color: 'orange' },
         ].map((stat, i) => (
-          <div key={i} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-            <div className={`w-10 h-10 rounded-xl bg-${stat.color}-50 flex items-center justify-center mb-4`}>
+          <div key={i} className="bg-white p-6 rounded border border-slate-100 shadow-sm">
+            <div className={`w-10 h-10 rounded bg-${stat.color}-50 flex items-center justify-center mb-4`}>
               <stat.icon className={`text-${stat.color}-600`} size={20} />
             </div>
             <p className="text-slate-400 text-sm font-medium">{stat.label}</p>
@@ -55,7 +55,7 @@ const AnalyticsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Shipment Volume Chart */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-white p-6 rounded border border-slate-100 shadow-sm">
           <h3 className="text-lg font-bold text-slate-800 mb-6" style={{ fontFamily: 'Sora, sans-serif' }}>
             Shipment Volume
           </h3>
@@ -75,7 +75,7 @@ const AnalyticsPage: React.FC = () => {
         </div>
 
         {/* Customer Distribution */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-white p-6 rounded border border-slate-100 shadow-sm">
           <h3 className="text-lg font-bold text-slate-800 mb-6" style={{ fontFamily: 'Sora, sans-serif' }}>
             Customer Segments
           </h3>

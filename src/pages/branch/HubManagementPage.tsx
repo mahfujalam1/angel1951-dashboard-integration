@@ -164,7 +164,7 @@ const HubManagementPage: React.FC = () => {
           type="primary"
           size="small"
           icon={<CreditCard size={14} />}
-          className="bg-emerald-600 border-none rounded-lg"
+          className="bg-emerald-600 border-none rounded"
           onClick={() => {
             setSelectedHub(record);
             setPaymentAmount(record.unpaidAmount);
@@ -244,9 +244,9 @@ const HubManagementPage: React.FC = () => {
           <Input
             placeholder="Find by Org or Email..."
             prefix={<Search size={16} className="text-slate-400" />}
-            className="w-64 rounded-md h-10 border-slate-300"
+            className="w-64 rounded h-10 border-slate-300"
           />
-          <Button type="primary" className="h-10 rounded-md bg-blue-600">
+          <Button type="primary" className="h-10 rounded bg-blue-600">
             Search
           </Button>
         </div>
@@ -255,7 +255,7 @@ const HubManagementPage: React.FC = () => {
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
-        className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"
+        className="bg-white p-6 rounded shadow-sm border border-slate-100"
       >
         <TabPane
           tab={
@@ -280,7 +280,7 @@ const HubManagementPage: React.FC = () => {
             <Input
               placeholder="Search by sender name or email..."
               prefix={<Search size={15} className="text-slate-400" />}
-              className="max-w-xs h-10 rounded-md border-slate-300"
+              className="max-w-xs h-10 rounded border-slate-300"
               value={parcelSearch}
               onChange={(e) => setParcelSearch(e.target.value)}
               allowClear
@@ -288,7 +288,7 @@ const HubManagementPage: React.FC = () => {
             <Input
               placeholder="Filter by hub source..."
               prefix={<Building2 size={15} className="text-slate-400" />}
-              className="max-w-xs h-10 rounded-md border-slate-300"
+              className="max-w-xs h-10 rounded border-slate-300"
               value={hubFilter}
               onChange={(e) => setHubFilter(e.target.value)}
               allowClear
@@ -323,13 +323,13 @@ const HubManagementPage: React.FC = () => {
         onCancel={() => setIsPaymentModalOpen(false)}
         onOk={handleProcessPayment}
         okText="Confirm Payment"
-        okButtonProps={{ className: "bg-emerald-600 rounded-lg h-10" }}
-        cancelButtonProps={{ className: "rounded-lg h-10" }}
+        okButtonProps={{ className: "bg-emerald-600 rounded h-10" }}
+        cancelButtonProps={{ className: "rounded h-10" }}
       >
         {selectedHub && (
           <div className="py-6 space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <div className="bg-slate-50 p-4 rounded border border-slate-100">
                 <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">
                   Delivered Parcels
                 </p>
@@ -337,7 +337,7 @@ const HubManagementPage: React.FC = () => {
                   {selectedHub.totalParcels}
                 </p>
               </div>
-              <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+              <div className="bg-emerald-50 p-4 rounded border border-emerald-100">
                 <p className="text-[10px] font-bold text-emerald-400 uppercase mb-1">
                   Outstanding Balance
                 </p>
@@ -353,7 +353,7 @@ const HubManagementPage: React.FC = () => {
                   Select Rate Per Parcel (%)
                 </label>
                 <Select
-                  className="w-full h-11 rounded-xl"
+                  className="w-full h-11 rounded"
                   placeholder="Choose percentage..."
                   value={ratePerParcel}
                   onChange={handleRateChange}
@@ -370,7 +370,7 @@ const HubManagementPage: React.FC = () => {
                   Total Amount to Pay
                 </label>
                 <InputNumber
-                  className="w-full h-12 flex items-center rounded-xl text-lg font-bold"
+                  className="w-full h-12 flex items-center rounded text-lg font-bold"
                   size="large"
                   value={paymentAmount}
                   onChange={(val) => setPaymentAmount(val || 0)}

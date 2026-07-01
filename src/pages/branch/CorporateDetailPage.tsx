@@ -121,7 +121,7 @@ const CorporateDetailPage: React.FC = () => {
                 </div>
                 <div>
                   <label className={labelClass}>Item Description</label>
-                  <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded-lg p-3">{request.items}</p>
+                  <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded p-3">{request.items}</p>
                 </div>
               </div>
             </Card>
@@ -138,7 +138,7 @@ const CorporateDetailPage: React.FC = () => {
                 </div>
                 <div>
                   <label className={labelClass}>Delivery Address</label>
-                  <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded-lg p-3">{request.receiverAddress}</p>
+                  <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded p-3">{request.receiverAddress}</p>
                 </div>
               </div>
             </Card>
@@ -150,7 +150,7 @@ const CorporateDetailPage: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Final Shipment Price (USD)</label>
                 <InputNumber
-                  className="w-full md:w-80 h-11 rounded-lg flex items-center text-base font-bold"
+                  className="w-full md:w-80 h-11 rounded flex items-center text-base font-bold"
                   placeholder="Enter amount"
                   min={0}
                   value={assignedPrice}
@@ -166,13 +166,13 @@ const CorporateDetailPage: React.FC = () => {
                 <Button
                   type="primary"
                   icon={<CheckCircle size={16} className="mr-1" />}
-                  className="h-11 px-8 rounded-lg bg-blue-600 font-bold"
+                  className="h-11 px-8 rounded bg-blue-600 font-bold"
                   onClick={handleCreateShipment}
                 >
                   Assign Price & Create Shipment
                 </Button>
                 <Button
-                  className="h-11 px-6 rounded-lg"
+                  className="h-11 px-6 rounded"
                   onClick={() => navigate('/branch/corporate-shipments')}
                 >
                   Cancel

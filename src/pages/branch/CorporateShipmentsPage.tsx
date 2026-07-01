@@ -213,7 +213,7 @@ const CorporateShipmentsPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg">
+          <div className="w-12 h-12 rounded bg-blue-600 flex items-center justify-center text-white shadow-md">
             <Package size={24} />
           </div>
           <div>
@@ -233,7 +233,7 @@ const CorporateShipmentsPage: React.FC = () => {
           type="primary"
           size="large"
           icon={<Plus size={18} />}
-          className="bg-blue-600 h-12 rounded-xl px-6 font-bold"
+          className="bg-blue-600 h-12 rounded px-6 font-bold"
           onClick={() => navigate("/branch/create-shipment")}
         >
           Create Shipment
@@ -245,7 +245,7 @@ const CorporateShipmentsPage: React.FC = () => {
           <Input
             placeholder="Search by tracking ID, email or org ID..."
             prefix={<Search size={18} className="text-slate-400" />}
-            className="max-w-md h-10 rounded-md border-slate-300"
+            className="max-w-md h-10 rounded border-slate-300"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

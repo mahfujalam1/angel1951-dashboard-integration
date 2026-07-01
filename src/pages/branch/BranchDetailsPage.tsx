@@ -93,8 +93,8 @@ const BranchDetailsPage: React.FC = () => {
           </div>
           
           <div className="flex gap-3">
-            <Button icon={<Printer size={16} />} className="h-11 rounded-xl font-bold">Print Waybill</Button>
-            <Button type="primary" icon={<ExternalLink size={16} />} className="h-11 rounded-xl bg-blue-600 font-bold px-6">
+            <Button icon={<Printer size={16} />} className="h-11 rounded font-bold">Print Waybill</Button>
+            <Button type="primary" icon={<ExternalLink size={16} />} className="h-11 rounded bg-blue-600 font-bold px-6">
               Track Status
             </Button>
           </div>
@@ -170,7 +170,7 @@ const BranchDetailsPage: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className={labelClass}>Category</label>
-                      <Tag color="cyan" className="rounded-lg font-bold border-none">{shipmentDetails.package.category}</Tag>
+                      <Tag color="cyan" className="rounded font-bold border-none">{shipmentDetails.package.category}</Tag>
                     </div>
                     <div>
                       <label className={labelClass}>Weight</label>
@@ -179,7 +179,7 @@ const BranchDetailsPage: React.FC = () => {
                   </div>
                   <div>
                     <label className={labelClass}>Item Description</label>
-                    <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded border border-slate-100">
                       {shipmentDetails.package.description}
                     </p>
                   </div>
@@ -199,10 +199,10 @@ const BranchDetailsPage: React.FC = () => {
                 
                 <div>
                   <label className={labelClass}>Package Image</label>
-                  <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-2 h-56 flex items-center justify-center overflow-hidden">
+                  <div className="bg-slate-50 border border-dashed border-slate-200 rounded p-2 h-56 flex items-center justify-center overflow-hidden">
                     <Image 
                       src={shipmentDetails.package.imageUrl} 
-                      className="rounded-xl object-cover h-full"
+                      className="rounded object-cover h-full"
                       height="100%"
                     />
                   </div>
@@ -239,7 +239,7 @@ const BranchDetailsPage: React.FC = () => {
                   </div>
                 </div>
                 
-                <Button block className="h-12 rounded-xl bg-white text-blue-600 border-none font-bold shadow-lg shadow-blue-900/20">
+                <Button block className="h-12 rounded bg-white text-blue-600 border-none font-bold shadow-md shadow-blue-900/20">
                   View Receipt
                 </Button>
               </div>
@@ -253,8 +253,8 @@ const BranchDetailsPage: React.FC = () => {
               <div className="space-y-5">
                 <div>
                   <label className={labelClass}>Processing Hub</label>
-                  <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                    <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+                  <div className="flex items-center gap-2 p-3 bg-slate-50 rounded border border-slate-100">
+                    <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600">
                       <Truck size={14} />
                     </div>
                     <span className="text-sm font-bold text-slate-700">{shipmentDetails.logistics.hub}</span>

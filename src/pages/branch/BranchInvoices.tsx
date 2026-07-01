@@ -198,7 +198,7 @@ const CorporateInvoiceView: React.FC<{
                       Apply Discount ($)
                     </label>
                     <InputNumber
-                      className="w-full h-11 rounded-xl flex items-center bg-slate-50"
+                      className="w-full h-11 rounded flex items-center bg-slate-50"
                       min={0}
                       max={subtotal}
                       value={discount}
@@ -219,14 +219,14 @@ const CorporateInvoiceView: React.FC<{
                   type="primary"
                   block
                   size="large"
-                  className="h-12 rounded-xl bg-blue-600 font-bold"
+                  className="h-12 rounded bg-blue-600 font-bold"
                   icon={<Send size={18} className="mr-2" />}
                   disabled={selectedRowKeys.length === 0}
                   onClick={handleSendInvoice}
                 >
                   Send Invoice
                 </Button>
-                <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                <div className="flex items-center gap-2 p-3 bg-blue-50 rounded border border-blue-100">
                   <Calculator size={16} className="text-blue-500" />
                   <span className="text-[10px] text-blue-700 font-medium">
                     Auto-calculates all selected items with applied discount.
@@ -244,10 +244,10 @@ const CorporateInvoiceView: React.FC<{
         onCancel={() => setIsInvoiceModalOpen(false)}
         onOk={handleFinalize}
         okText="Confirm & Send via Email"
-        okButtonProps={{ className: "bg-blue-600 rounded-lg h-10" }}
+        okButtonProps={{ className: "bg-blue-600 rounded h-10" }}
       >
         <div className="py-4 space-y-4">
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+          <div className="p-4 bg-slate-50 rounded border border-slate-100">
             <p className="text-sm font-semibold text-slate-700">
               Consolidating {selectedRowKeys.length} shipments for:
             </p>
@@ -461,7 +461,7 @@ const InstalmentInvoiceView: React.FC<{
                   {instalmentBreakdown.map((inst) => (
                     <div
                       key={inst.num}
-                      className="flex items-center justify-between p-3 bg-slate-50 rounded-xl"
+                      className="flex items-center justify-between p-3 bg-slate-50 rounded"
                     >
                       <div>
                         <p className="text-sm font-bold text-slate-700">
@@ -490,7 +490,7 @@ const InstalmentInvoiceView: React.FC<{
                   <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
                     Instalment Plan (Global)
                   </label>
-                  <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                  <div className="flex items-center gap-2 p-3 bg-blue-50 rounded border border-blue-100">
                     <Layers size={16} className="text-blue-500" />
                     <span className="text-sm font-bold text-blue-700">
                     {customer.type === "Personalized Cargo" ? "2 (Strict)" : instalments} Instalments
@@ -512,7 +512,7 @@ const InstalmentInvoiceView: React.FC<{
                     Apply Discount ($)
                   </label>
                   <InputNumber
-                    className="w-full h-11 rounded-xl flex items-center bg-slate-50"
+                    className="w-full h-11 rounded flex items-center bg-slate-50"
                     min={0}
                     max={subtotal}
                     value={discount}
@@ -549,7 +549,7 @@ const InstalmentInvoiceView: React.FC<{
                   type="primary"
                   block
                   size="large"
-                  className="h-12 rounded-xl bg-blue-600 font-bold"
+                  className="h-12 rounded bg-blue-600 font-bold"
                   icon={<Send size={18} className="mr-2" />}
                   disabled={selectedRowKeys.length === 0 || total <= 0}
                   onClick={handleSend}
@@ -569,10 +569,10 @@ const InstalmentInvoiceView: React.FC<{
         onCancel={() => setIsModalOpen(false)}
         onOk={handleFinalize}
         okText="Confirm & Send All"
-        okButtonProps={{ className: "bg-blue-600 rounded-lg h-10" }}
+        okButtonProps={{ className: "bg-blue-600 rounded h-10" }}
       >
         <div className="py-4 space-y-4">
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+          <div className="p-4 bg-slate-50 rounded border border-slate-100">
             <p className="text-sm font-semibold text-slate-700">
               {instalments} instalment invoices for:
             </p>
@@ -666,7 +666,7 @@ const BranchInvoices: React.FC = () => {
               <Input 
                 placeholder="Search Organization..." 
                 prefix={<Search size={16} />} 
-                className="max-w-xs h-10 rounded-xl"
+                className="max-w-xs h-10 rounded"
                 value={localSearch}
                 onChange={(e) => setLocalSearch(e.target.value)}
               />
@@ -710,7 +710,7 @@ const BranchInvoices: React.FC = () => {
           <Input 
             placeholder="Search Organization..." 
             prefix={<Search size={18} className="text-slate-400" />} 
-            className="max-w-md h-11 rounded-xl shadow-sm"
+            className="max-w-md h-11 rounded shadow-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -751,11 +751,11 @@ const BranchInvoices: React.FC = () => {
           <div 
             key={s.role}
             onClick={() => setSelectedRole(s.role)}
-            className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
+            className="bg-white p-6 rounded border border-slate-100 shadow-sm hover:shadow-md transition-all cursor-pointer group"
           >
             <div className="flex justify-between items-start mb-4">
               <span className={`text-[10px] font-black uppercase tracking-widest text-${s.color}-500`}>{s.role}</span>
-              <div className={`p-2 bg-${s.color}-50 text-${s.color}-600 rounded-xl group-hover:scale-110 transition-transform`}>
+              <div className={`p-2 bg-${s.color}-50 text-${s.color}-600 rounded group-hover:scale-110 transition-transform`}>
                 <Layers size={18} />
               </div>
             </div>
@@ -784,7 +784,7 @@ const BranchInvoices: React.FC = () => {
           <Input
             placeholder="Search by Organization Name or Email..."
             prefix={<Search size={18} className="text-slate-400" />}
-            className="flex-1 max-w-md h-10 rounded-md border-slate-300"
+            className="flex-1 max-w-md h-10 rounded border-slate-300"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -801,7 +801,7 @@ const BranchInvoices: React.FC = () => {
               key: "org",
               render: (_, record) => (
                 <div className="flex items-center gap-3 py-1">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                  <div className="w-10 h-10 rounded bg-blue-50 flex items-center justify-center text-blue-600">
                     <Building2 size={20} />
                   </div>
                   <div>
@@ -841,7 +841,7 @@ const BranchInvoices: React.FC = () => {
                 <Button
                   type="primary"
                   ghost
-                  className="rounded-lg border-blue-200 hover:border-blue-600"
+                  className="rounded border-blue-200 hover:border-blue-600"
                   icon={<ChevronRight size={16} />}
                   onClick={() => setSelectedCustomer(record)}
                 >

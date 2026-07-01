@@ -150,7 +150,7 @@ const LoginPage: React.FC = () => {
         <div className="absolute top-1/2 right-10 w-48 h-48 rounded-full opacity-5" style={{ background: "white" }} />
 
         <div className="flex items-center gap-3 relative z-10">
-          <div className="rounded-2xl mb-2 px-3 py-2 bg-white">
+          <div className="rounded mb-2 px-3 py-2 bg-white">
             <img src="/buan-logo.png" alt="" className="h-12 w-12" />
           </div>
           <div>
@@ -178,7 +178,7 @@ const LoginPage: React.FC = () => {
               { label: "Staff Members", value: "320" },
               { label: "Cities Covered", value: "85" },
             ].map((s) => (
-              <div key={s.label} className="bg-white/10 backdrop-blur rounded-2xl p-4">
+              <div key={s.label} className="bg-white/10 backdrop-blur rounded p-4">
                 <div className="text-2xl font-bold text-white" style={{ fontFamily: "Sora, sans-serif" }}>
                   {s.value}
                 </div>
@@ -196,7 +196,7 @@ const LoginPage: React.FC = () => {
         <div className="w-full max-w-md">
           {/* Mobile logo */}
           <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded bg-blue-600 flex items-center justify-center">
               <Truck size={17} className="text-white" />
             </div>
             <span className="text-slate-800 text-lg font-bold" style={{ fontFamily: "Sora, sans-serif" }}>
@@ -214,7 +214,7 @@ const LoginPage: React.FC = () => {
               </div>
 
               {/* Demo credentials hint */}
-              <div className="mb-6 px-4 py-3 bg-blue-50 rounded-xl border border-blue-100">
+              <div className="mb-6 px-4 py-3 bg-blue-50 rounded border border-blue-100">
                 <p className="text-xs text-blue-600 font-semibold mb-1">Demo Credentials:</p>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
@@ -381,7 +381,7 @@ const LoginPage: React.FC = () => {
                     value={v}
                     onChange={(e) => handleOtpChange(i, e.target.value)}
                     onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                    className={`w-12 h-14 text-center text-xl font-bold border-2 rounded-xl outline-none transition-all duration-200 
+                    className={`w-12 h-14 text-center text-xl font-bold border rounded outline-none transition-all duration-200 
                       ${v ? "border-blue-600 bg-blue-50 text-blue-600" : "border-slate-200 text-slate-800"}
                       focus:border-blue-600 focus:ring-2 focus:ring-blue-100`}
                   />

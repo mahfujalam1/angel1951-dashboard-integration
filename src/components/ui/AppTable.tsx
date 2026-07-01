@@ -23,7 +23,7 @@ function AppTable<T extends object>({
   const end = Math.min(current * pageSize, total ?? data.length);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+    <div className="bg-white rounded shadow-sm border border-slate-100 overflow-hidden">
       <Table
         columns={columns}
         dataSource={data}

@@ -33,10 +33,10 @@ const UploadDocsModal: React.FC<UploadDocsModalProps> = ({ open, onCancel, onFin
       <Dragger
         name="file"
         multiple={true}
-        className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-8 hover:border-blue-400 transition-all mb-6"
+        className="bg-slate-50 border border-dashed border-slate-200 rounded p-8 hover:border-blue-400 transition-all mb-6"
       >
         <p className="ant-upload-drag-icon flex justify-center mb-4">
-          <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+          <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded flex items-center justify-center">
             <Upload size={28} />
           </div>
         </p>

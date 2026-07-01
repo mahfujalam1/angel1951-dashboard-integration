@@ -59,17 +59,17 @@ const ReportsPage: React.FC = () => {
       render: (_: unknown, r: Report) => (
         <div className="flex items-center gap-1.5">
           <button onClick={() => setViewReport(r)}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
+            className="w-8 h-8 flex items-center justify-center rounded hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
             <Eye size={15} />
           </button>
           {r.status === 'Pending' && (
             <button onClick={() => { setReplyReport(r); setReplyText(''); }}
-              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 transition-colors">
+              className="w-8 h-8 flex items-center justify-center rounded hover:bg-emerald-50 text-slate-400 hover:text-emerald-500 transition-colors">
               <Reply size={15} />
             </button>
           )}
           <button onClick={() => handleDelete(r.id)}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors">
+            className="w-8 h-8 flex items-center justify-center rounded hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors">
             <Trash2 size={15} />
           </button>
         </div>
@@ -88,7 +88,7 @@ const ReportsPage: React.FC = () => {
       <Modal open={!!replyReport} onCancel={() => setReplyReport(null)} footer={null} title="Reply to Report" width={460}>
         {replyReport && (
           <div className="pt-3 space-y-4">
-            <div className="p-4 bg-slate-50 rounded-xl">
+            <div className="p-4 bg-slate-50 rounded">
               <p className="text-xs text-slate-400 font-medium mb-1">Original Message from {replyReport.name}</p>
               <p className="text-sm text-slate-700">{replyReport.description}</p>
             </div>
@@ -104,11 +104,11 @@ const ReportsPage: React.FC = () => {
             </div>
             <div className="flex gap-3">
               <button onClick={() => setReplyReport(null)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                className="flex-1 py-2.5 rounded text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
                 Cancel
               </button>
               <button onClick={handleReply}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                className="flex-1 py-2.5 rounded text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
                 Send Reply
               </button>
             </div>
@@ -130,19 +130,19 @@ const ReportsPage: React.FC = () => {
                 <Reply size={11} /> {viewReport.status}
               </span>
             </div>
-            <div className="p-4 bg-slate-50 rounded-xl">
+            <div className="p-4 bg-slate-50 rounded">
               <p className="text-xs text-slate-400 font-medium mb-1">Message</p>
               <p className="text-sm text-slate-700 leading-relaxed">{viewReport.description}</p>
             </div>
             {viewReport.reply && (
-              <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+              <div className="p-4 bg-emerald-50 rounded border border-emerald-100">
                 <p className="text-xs text-emerald-600 font-medium mb-1 flex items-center gap-1"><Reply size={11} /> Your Reply</p>
                 <p className="text-sm text-slate-700 leading-relaxed">{viewReport.reply}</p>
               </div>
             )}
             {viewReport.status === 'Pending' && (
               <button onClick={() => { setViewReport(null); setReplyReport(viewReport); setReplyText(''); }}
-                className="w-full py-2.5 rounded-xl text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                className="w-full py-2.5 rounded text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">
                 Reply to this Report
               </button>
             )}

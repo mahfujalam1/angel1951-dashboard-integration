@@ -115,7 +115,7 @@ const BranchDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-200">
+          <div className="w-12 h-12 rounded bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-200">
             <LayoutDashboard size={24} />
           </div>
           <div>
@@ -135,14 +135,14 @@ const BranchDashboard: React.FC = () => {
           <Input
             placeholder="Enter tracking number..."
             prefix={<Search size={18} className="text-slate-400" />}
-            className="w-full md:w-80 border-slate-300 rounded-md h-10"
+            className="w-full md:w-80 border-slate-300 rounded h-10"
             value={trackingQuery}
             onChange={(e) => setTrackingQuery(e.target.value)}
             onPressEnter={handleTrack}
           />
           <Button
             type="primary"
-            className="h-10 rounded-md"
+            className="h-10 rounded"
             onClick={handleTrack}
           >
             Track
@@ -184,10 +184,10 @@ const BranchDashboard: React.FC = () => {
         ].map((stat, i) => (
           <div
             key={stat.label}
-            className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
+            className="bg-white p-6 rounded border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
           >
             <div
-              className={`w-10 h-10 rounded-xl bg-${stat.color}-50 flex items-center justify-center mb-4`}
+              className={`w-10 h-10 rounded bg-${stat.color}-50 flex items-center justify-center mb-4`}
             >
               <stat.icon className={`text-${stat.color}-600`} size={20} />
             </div>
@@ -207,7 +207,7 @@ const BranchDashboard: React.FC = () => {
 
       {/* Analytics Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-white p-6 rounded border border-slate-100 shadow-sm">
           <h3
             className="text-lg font-bold text-slate-800 mb-6"
             style={{ fontFamily: "Sora, sans-serif" }}
@@ -251,7 +251,7 @@ const BranchDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+        <div className="bg-white p-6 rounded border border-slate-100 shadow-sm">
           <h3
             className="text-lg font-bold text-slate-800 mb-6"
             style={{ fontFamily: "Sora, sans-serif" }}
@@ -304,7 +304,7 @@ const BranchDashboard: React.FC = () => {
             title="Incoming Parcel Requests (Hubs)"
             className="h-full border-none shadow-sm"
           >
-            <div className="mb-4 text-xs text-slate-400 bg-amber-50 p-3 rounded-lg border border-amber-100 flex items-center gap-2">
+            <div className="mb-4 text-xs text-slate-400 bg-amber-50 p-3 rounded border border-amber-100 flex items-center gap-2">
               <AlertCircle size={14} className="text-amber-500" />
               These parcels are ready at hubs. Once manually received, they will
               be converted to shipments.

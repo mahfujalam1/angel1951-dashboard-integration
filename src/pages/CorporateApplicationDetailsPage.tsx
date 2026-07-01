@@ -165,7 +165,7 @@ const CorporateApplicationDetailsPage: React.FC = () => {
 
           {!isPendingStatus(application.status) && (
             <div
-              className={`rounded-2xl border p-5 ${
+              className={`rounded border p-5 ${
                 isAcceptedStatus(application.status)
                   ? 'bg-emerald-50 border-emerald-100'
                   : isRejectedStatus(application.status)

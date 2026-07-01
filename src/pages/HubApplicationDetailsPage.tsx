@@ -160,7 +160,7 @@ const HubApplicationDetailsPage: React.FC = () => {
             <DetailSection title="Shop Images">
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {application.image_urls.map((url: string, i: number) => (
-                  <a key={i} href={url} target="_blank" rel="noreferrer" className="block rounded-xl overflow-hidden border border-slate-100">
+                  <a key={i} href={url} target="_blank" rel="noreferrer" className="block rounded overflow-hidden border border-slate-100">
                     <img src={url} alt={`Shop ${i + 1}`} className="w-full h-32 object-cover" />
                   </a>
                 ))}
@@ -181,7 +181,7 @@ const HubApplicationDetailsPage: React.FC = () => {
 
           {!isPendingStatus(application.status) && (
             <div
-              className={`rounded-2xl border p-5 ${
+              className={`rounded border p-5 ${
                 isAcceptedStatus(application.status)
                   ? 'bg-emerald-50 border-emerald-100'
                   : isRejectedStatus(application.status)

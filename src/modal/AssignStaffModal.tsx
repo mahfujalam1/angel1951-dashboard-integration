@@ -24,7 +24,7 @@ const AssignStaffModal: React.FC<AssignStaffModalProps> = ({ open, onCancel, onF
       }
     >
       <div className="text-center mb-6 pt-2">
-        <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded flex items-center justify-center mx-auto mb-4">
           <UserCheck size={32} />
         </div>
         <h2 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Assign Staff</h2>

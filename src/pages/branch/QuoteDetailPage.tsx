@@ -137,7 +137,7 @@ const QuoteDetailPage: React.FC = () => {
             </div>
             <div className="mt-4 pt-4 border-t border-slate-50">
               <label className={labelClass}>Items Description</label>
-              <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded-lg p-4 mt-1">{quote.items}</p>
+              <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded p-4 mt-1">{quote.items}</p>
             </div>
           </Card>
 
@@ -147,7 +147,7 @@ const QuoteDetailPage: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Estimated Budget (USD)</label>
                 <InputNumber
-                  className="w-full md:w-80 h-11 rounded-lg flex items-center text-base font-bold"
+                  className="w-full md:w-80 h-11 rounded flex items-center text-base font-bold"
                   placeholder="Enter budget amount"
                   min={0}
                   value={budget}
@@ -163,7 +163,7 @@ const QuoteDetailPage: React.FC = () => {
                 <Button
                   type="primary"
                   icon={<Send size={16} className="mr-1" />}
-                  className="h-11 px-8 rounded-lg bg-blue-600 font-bold"
+                  className="h-11 px-8 rounded bg-blue-600 font-bold"
                   onClick={handleSend}
                 >
                   Send Budget Proposal
@@ -171,7 +171,7 @@ const QuoteDetailPage: React.FC = () => {
                 <Button
                   danger
                   icon={<XCircle size={16} className="mr-1" />}
-                  className="h-11 px-6 rounded-lg"
+                  className="h-11 px-6 rounded"
                   onClick={() => setCancelModalOpen(true)}
                 >
                   Decline Request
@@ -193,7 +193,7 @@ const QuoteDetailPage: React.FC = () => {
                   <textarea
                     rows={4}
                     placeholder="Enter your note here..."
-                    className="w-full border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-700 focus:outline-none focus:border-blue-400 resize-none"
+                    className="w-full border border-slate-200 rounded px-4 py-3 text-sm text-slate-700 focus:outline-none focus:border-blue-400 resize-none"
                     value={cancelNote}
                     onChange={e => setCancelNote(e.target.value)}
                   />

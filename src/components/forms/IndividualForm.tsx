@@ -56,14 +56,14 @@ export default function IndividualForm() {
     toast.success("Individual Shipment Created!");
   };
 
-  const inputClass = "w-full border-none bg-slate-100/50 rounded-md px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-slate-100 transition-colors";
+  const inputClass = "w-full border-none bg-slate-100/50 rounded px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-slate-100 transition-colors";
   const labelClass = "block text-sm font-medium text-slate-700 mb-1";
   const errorClass = "text-xs text-red-500 mt-1";
   const sectionTitle = "text-lg font-bold text-slate-800 mb-4 flex items-center gap-2";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-4xl mx-auto pb-12">
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}><span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Shipment Information</h2>
         
         <div className="flex flex-wrap gap-x-12 gap-y-6">
@@ -92,7 +92,7 @@ export default function IndividualForm() {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}><span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Sender Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
@@ -122,7 +122,7 @@ export default function IndividualForm() {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}><span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Receiver Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
@@ -151,7 +151,7 @@ export default function IndividualForm() {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}><span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Package Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -164,7 +164,7 @@ export default function IndividualForm() {
           </div>
           <div className="md:col-span-2">
             <label className={labelClass}>Upload Photo</label>
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200">
+            <label className="flex flex-col items-center justify-center w-full h-32 border border-dashed border-slate-200 rounded cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200">
               <Upload className="w-8 h-8 text-slate-400 mb-2" />
               <span className="text-sm text-slate-500 font-medium">Click to upload parcel photo</span>
               <input type="file" accept="image/*" {...register("uploadImage")} className="hidden" />
@@ -174,7 +174,7 @@ export default function IndividualForm() {
       </div>
 
       <div className="flex justify-center pt-4">
-        <button type="submit" className="w-64 py-4 bg-blue-600 hover:bg-blue-700 text-white text-base font-bold rounded-full transition-all shadow-lg shadow-blue-100">
+        <button type="submit" className="w-64 py-4 bg-blue-600 hover:bg-blue-700 text-white text-base font-bold rounded-full transition-all shadow-md shadow-blue-100">
           Create Shipment
         </button>
       </div>

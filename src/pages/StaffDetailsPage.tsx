@@ -19,7 +19,7 @@ const StaffDetailsPage: React.FC = () => {
       {/* Back + header */}
       <div className="flex items-center gap-3">
         <button onClick={() => navigate(-1)}
-          className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600 shadow-sm">
+          className="w-10 h-10 flex items-center justify-center rounded bg-white border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600 shadow-sm">
           <ArrowLeft size={18} />
         </button>
         <div>
@@ -32,7 +32,7 @@ const StaffDetailsPage: React.FC = () => {
       <Card>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-2">
           <div className="flex items-center gap-6 flex-1">
-            <div className="w-24 h-24 rounded-3xl bg-blue-50 flex items-center justify-center text-4xl shadow-inner relative overflow-hidden border-4 border-white ring-1 ring-slate-100">
+            <div className="w-24 h-24 rounded bg-blue-50 flex items-center justify-center text-4xl shadow-md relative overflow-hidden border border-white ring-1 ring-slate-100">
               {staff.avatar ? (
                 <img src={staff.avatar} alt={staff.name} className="w-full h-full object-cover" />
               ) : (
@@ -57,11 +57,11 @@ const StaffDetailsPage: React.FC = () => {
             </div>
           </div>
           <div className="w-full md:w-auto flex gap-3">
-            <div className="flex-1 md:flex-none px-6 py-3 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+            <div className="flex-1 md:flex-none px-6 py-3 bg-slate-50 rounded border border-slate-100 text-center">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Deliveries</p>
               <p className="text-xl font-bold text-blue-600">{staff.deliveries}</p>
             </div>
-            <div className="flex-1 md:flex-none px-6 py-3 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+            <div className="flex-1 md:flex-none px-6 py-3 bg-slate-50 rounded border border-slate-100 text-center">
               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Rating</p>
               <p className="text-xl font-bold text-emerald-600">4.9</p>
             </div>
@@ -70,10 +70,10 @@ const StaffDetailsPage: React.FC = () => {
       </Card>
 
       {/* 1. Personal & Contact Details */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+      <div className="bg-white rounded p-8 border border-slate-100 shadow-sm relative overflow-hidden">
         <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">1.</div>
+          <div className="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">1.</div>
           <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Personal Information :</h3>
         </div>
 
@@ -104,10 +104,10 @@ const StaffDetailsPage: React.FC = () => {
       </div>
 
       {/* 2. Employment Details */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+      <div className="bg-white rounded p-8 border border-slate-100 shadow-sm relative overflow-hidden">
         <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">2.</div>
+          <div className="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">2.</div>
           <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Employment Details :</h3>
         </div>
 
@@ -128,10 +128,10 @@ const StaffDetailsPage: React.FC = () => {
       </div>
 
       {/* 3. Operational Performance */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+      <div className="bg-white rounded p-8 border border-slate-100 shadow-sm relative overflow-hidden">
         <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">3.</div>
+          <div className="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">3.</div>
           <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Work Schedule & Duty :</h3>
         </div>
 
@@ -168,10 +168,10 @@ const StaffDetailsPage: React.FC = () => {
       </div>
 
       {/* 5. Experience & Commitment */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
+      <div className="bg-white rounded p-8 border border-slate-100 shadow-sm relative overflow-hidden">
         <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">5.</div>
+          <div className="w-8 h-8 rounded bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">5.</div>
           <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Commitment & Notes :</h3>
         </div>
 

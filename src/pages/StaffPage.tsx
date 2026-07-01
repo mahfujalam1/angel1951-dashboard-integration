@@ -102,11 +102,11 @@ const StaffPage: React.FC = () => {
       render: (_: unknown, r: Staff) => (
         <div className="flex items-center gap-1">
           <button onClick={() => navigate(`/staff/${r.id}`, { state: { staff: r } })}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
+            className="w-8 h-8 flex items-center justify-center rounded hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
             <Eye size={15} />
           </button>
           <Dropdown menu={{ items: getActions(r) }} trigger={['click']} placement="bottomRight">
-            <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 transition-colors">
+            <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-slate-100 text-slate-400 transition-colors">
               <MoreVertical size={15} />
             </button>
           </Dropdown>
@@ -136,9 +136,9 @@ const StaffPage: React.FC = () => {
       </div>
       <div className="flex gap-3 mt-2">
         <button type="button" onClick={() => { setCreateModal(false); setEditStaff(null); form.resetFields(); }}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">Cancel</button>
+          className="flex-1 py-2.5 rounded text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">Cancel</button>
         <button type="submit"
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">Save</button>
+          className="flex-1 py-2.5 rounded text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors">Save</button>
       </div>
     </Form>
   );

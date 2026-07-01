@@ -41,7 +41,7 @@ const HubParcelDetailPage: React.FC = () => {
           </h1>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm p-8 space-y-8">
+        <div className="bg-white rounded shadow-sm p-8 space-y-8">
           {/* Customer Details */}
           <div>
             <p className={labelClass}>Customer Details</p>
@@ -52,7 +52,7 @@ const HubParcelDetailPage: React.FC = () => {
                   type="text"
                   defaultValue={parcel.senderName}
                   readOnly
-                  className="w-full border-none bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none"
+                  className="w-full border-none bg-slate-50 rounded px-4 py-3 text-sm text-slate-700 focus:outline-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -63,7 +63,7 @@ const HubParcelDetailPage: React.FC = () => {
                     defaultValue={parcel.senderPhone}
                     readOnly
                     placeholder="+234 ..."
-                    className="w-full border-none bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none"
+                    className="w-full border-none bg-slate-50 rounded px-4 py-3 text-sm text-slate-700 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -73,7 +73,7 @@ const HubParcelDetailPage: React.FC = () => {
                     defaultValue={parcel.destination}
                     readOnly
                     placeholder="Street, City, State"
-                    className="w-full border-none bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none"
+                    className="w-full border-none bg-slate-50 rounded px-4 py-3 text-sm text-slate-700 focus:outline-none"
                   />
                 </div>
               </div>
@@ -88,7 +88,7 @@ const HubParcelDetailPage: React.FC = () => {
               readOnly
               rows={4}
               placeholder="Describe the items in the parcel..."
-              className="w-full border-none bg-slate-50 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none resize-none"
+              className="w-full border-none bg-slate-50 rounded px-4 py-3 text-sm text-slate-700 focus:outline-none resize-none"
             />
           </div>
 
@@ -96,7 +96,7 @@ const HubParcelDetailPage: React.FC = () => {
           <div>
             <p className={labelClass}>Parcel Image</p>
             {parcel.imageUrl ? (
-              <div className="relative rounded-2xl overflow-hidden bg-slate-50 border-2 border-dashed border-slate-200 h-52">
+              <div className="relative rounded overflow-hidden bg-slate-50 border border-dashed border-slate-200 h-52">
                 <img
                   src={parcel.imageUrl}
                   alt="Parcel"
@@ -109,7 +109,7 @@ const HubParcelDetailPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all">
+              <label className="flex flex-col items-center justify-center w-full h-44 border border-dashed border-slate-200 rounded cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all">
                 <Upload size={24} className="text-slate-400 mb-2" />
                 <span className="text-sm font-bold text-slate-600">Click to upload Parcel Image</span>
                 <span className="text-xs text-slate-400 mt-1">PNG, JPG or JPEG (MAX. 5MB)</span>
@@ -129,14 +129,14 @@ const HubParcelDetailPage: React.FC = () => {
           {/* Actions */}
           <div className="flex items-center justify-between pt-2 border-t border-slate-100">
             <Button
-              className="h-11 px-8 rounded-xl border-slate-300"
+              className="h-11 px-8 rounded border-slate-300"
               onClick={() => navigate(-1)}
             >
               Cancel
             </Button>
             <Button
               type="primary"
-              className="h-11 px-10 rounded-xl bg-[#1a237e] font-bold text-base shadow-none border-none"
+              className="h-11 px-10 rounded bg-[#1a237e] font-bold text-base shadow-md border-none"
               onClick={() => {
                 message.success('Parcel received. Redirecting to create shipment...');
                 navigate('/branch/create-shipment');

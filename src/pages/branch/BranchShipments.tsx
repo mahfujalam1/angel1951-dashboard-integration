@@ -254,7 +254,7 @@ const BranchShipments: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg">
+          <div className="w-12 h-12 rounded bg-blue-600 flex items-center justify-center text-white shadow-md">
             <Package size={24} />
           </div>
           <div>
@@ -274,7 +274,7 @@ const BranchShipments: React.FC = () => {
           type="primary"
           size="large"
           icon={<Plus size={18} />}
-          className="bg-blue-600 h-12 rounded-xl px-6 font-bold"
+          className="bg-blue-600 h-12 rounded px-6 font-bold"
           onClick={() => navigate("/branch/create-shipment")}
         >
           Create Shipment
@@ -289,7 +289,7 @@ const BranchShipments: React.FC = () => {
               placeholder="Shipment Type"
               style={{ width: 160 }}
               allowClear
-              className="rounded-md"
+              className="rounded"
               onChange={(val) => setFilterType(val)}
             >
               <Option value="Corporate">Corporate</Option>
@@ -302,7 +302,7 @@ const BranchShipments: React.FC = () => {
           <Input
             placeholder="Search by tracking ID, email or org ID..."
             prefix={<Search size={18} className="text-slate-400" />}
-            className="flex-1 max-w-md h-10 rounded-md border-slate-300"
+            className="flex-1 max-w-md h-10 rounded border-slate-300"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

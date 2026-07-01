@@ -8,6 +8,7 @@ import CorporateApplicationsPage from '../pages/CorporateApplicationsPage';
 import CorporateApplicationDetailsPage from '../pages/CorporateApplicationDetailsPage';
 import UpgradeApplicationsPage from '../pages/UpgradeApplicationsPage';
 import UpgradeApplicationDetailsPage from '../pages/UpgradeApplicationDetailsPage';
+import BranchesPage from '../pages/BranchesPage';
 import HubsPage from '../pages/HubsPage';
 import HubDetailsPage from '../pages/HubDetailsPage';
 import StaffPage from '../pages/StaffPage';
@@ -28,6 +29,7 @@ export const adminRoutes: AppRoute[] = [
   { path: '/corporate-applications/:id', element: <CorporateApplicationDetailsPage /> },
   { path: '/upgrade-applications', element: <UpgradeApplicationsPage /> },
   { path: '/upgrade-applications/:id', element: <UpgradeApplicationDetailsPage /> },
+  { path: '/branches', element: <BranchesPage /> },
   { path: '/hubs', element: <HubsPage /> },
   { path: '/hubs/:id', element: <HubDetailsPage /> },
   { path: '/staff', element: <StaffPage /> },

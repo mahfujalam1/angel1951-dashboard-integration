@@ -54,7 +54,7 @@ export function DetailSection({
   className?: string;
 }) {
   return (
-    <div className={`bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden ${className}`}>
+    <div className={`bg-white rounded border border-slate-100 shadow-sm overflow-hidden ${className}`}>
       <div className="px-6 py-4 border-b border-slate-50 bg-slate-50/50">
         <h3 className="text-sm font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>
           {title}

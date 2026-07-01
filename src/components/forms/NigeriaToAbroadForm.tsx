@@ -68,7 +68,7 @@ export default function NigeriaToAbroadForm() {
   };
 
   const inputClass =
-    "w-full border-none bg-slate-100/50 rounded-md px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-slate-100 transition-colors";
+    "w-full border-none bg-slate-100/50 rounded px-3 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:bg-slate-100 transition-colors";
   const labelClass = "block text-sm font-medium text-slate-700 mb-1";
   const errorClass = "text-xs text-red-500 mt-1";
   const sectionTitle =
@@ -79,7 +79,7 @@ export default function NigeriaToAbroadForm() {
       onSubmit={handleSubmit(onSubmit)}
       className="space-y-8 max-w-4xl mx-auto pb-12"
     >
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}>
           <span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Shipment
           Information
@@ -133,7 +133,7 @@ export default function NigeriaToAbroadForm() {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}>
           <span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Sender
           Information
@@ -191,7 +191,7 @@ export default function NigeriaToAbroadForm() {
 
           <div className="md:col-span-2">
             <label className={labelClass}>Sender Country</label>
-            <div className="w-full bg-slate-100/50 border-none rounded-md px-3 py-2.5 text-sm text-slate-600 flex items-center gap-2">
+            <div className="w-full bg-slate-100/50 border-none rounded px-3 py-2.5 text-sm text-slate-600 flex items-center gap-2">
               <span>🇳🇬</span>
               <span className="font-bold text-slate-800">Nigeria</span>
               <span className="ml-auto text-[10px] bg-slate-200 px-2 py-0.5 rounded text-slate-500 uppercase font-bold tracking-wider">
@@ -245,7 +245,7 @@ export default function NigeriaToAbroadForm() {
                 placeholder="Enter weight in KG"
                 className={inputClass}
               />
-              <div className="flex items-center px-3 bg-slate-100/50 border-none rounded-md text-slate-500 text-sm font-medium min-w-[60px] justify-center">
+              <div className="flex items-center px-3 bg-slate-100/50 border-none rounded text-slate-500 text-sm font-medium min-w-[60px] justify-center">
                 KG
               </div>
             </div>
@@ -268,7 +268,7 @@ export default function NigeriaToAbroadForm() {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}>
           <span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Receiver
           Information
@@ -339,7 +339,7 @@ export default function NigeriaToAbroadForm() {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}>
           <span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Pickup &
           Package Image
@@ -359,7 +359,7 @@ export default function NigeriaToAbroadForm() {
 
           <div className="md:col-span-2">
             <label className={labelClass}>Upload Image</label>
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200">
+            <label className="flex flex-col items-center justify-center w-full h-32 border border-dashed border-slate-200 rounded cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200">
               <Upload className="w-8 h-8 text-slate-400 mb-2" />
               <span className="text-sm text-slate-500 font-medium tracking-tight">
                 Click to upload parcel photo
@@ -375,7 +375,7 @@ export default function NigeriaToAbroadForm() {
         </div>
       </div>
 
-      <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm">
+      <div className="bg-white p-8 rounded border border-slate-100 shadow-sm">
         <h2 className={sectionTitle}>
           <span className="w-1.5 h-6 bg-blue-600 rounded-full" /> Payment
           Information
@@ -428,7 +428,7 @@ export default function NigeriaToAbroadForm() {
       <div className="flex justify-center pt-4">
         <button
           type="submit"
-          className="w-64 py-4 bg-blue-600 hover:bg-blue-700 text-white text-base font-bold rounded-full transition-all shadow-lg shadow-blue-100"
+          className="w-64 py-4 bg-blue-600 hover:bg-blue-700 text-white text-base font-bold rounded-full transition-all shadow-md shadow-blue-100"
         >
           Send Invoice
         </button>

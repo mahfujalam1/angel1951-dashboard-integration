@@ -1,26 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, message, Skeleton } from 'antd';
+import { Modal, message, Skeleton, Select } from 'antd';
 import { Package, Truck, Warehouse, Navigation, PackageCheck, CheckCircle2, Eye } from 'lucide-react';
 import StatCard from '../components/ui/StatCard';
 import Card from '../components/ui/Card';
 import { UserGrowthChart, EarningsChart } from '../components/charts/Charts';
 import { userGrowthData, earningGrowthData } from '../data/mockData';
 import type { HubRequest } from '../types';
-import { useGetShipmentStatsQuery, useGetDashboardRequestsQuery, useGetGrowthStatsQuery } from '../redux/api/statsApi';
+import { useGetAdminDashboardStatsQuery } from '../redux/api/statsApi';
 
 const DashboardPage: React.FC = () => {
-  const { data: statsRes, isLoading: statsLoading } = useGetShipmentStatsQuery();
-  const { data: requestsRes, isLoading: requestsLoading } = useGetDashboardRequestsQuery();
-  const { data: growthRes } = useGetGrowthStatsQuery();
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+  const { data: statsRes, isLoading: statsLoading, isFetching: statsFetching } = useGetAdminDashboardStatsQuery({ year: selectedYear });
 
   const [requests, setRequests] = useState<HubRequest[]>([]);
   const [detailModal, setDetailModal] = useState<HubRequest | null>(null);
 
   useEffect(() => {
-    if (requestsRes?.success) {
-      setRequests(requestsRes.data);
+    if (statsRes?.success && statsRes.data) {
+      const { pendingHubRequests = [], pendingBusinessRequests = [] } = statsRes.data;
+      
+      const mappedHubs = pendingHubRequests.map((req: any) => ({
+        id: req.id,
+        type: 'hub',
+        hub: req.shopName,
+        phone: req.contact,
+        location: `${req.address}, ${req.cityOrState}`,
+        store: req.shopName,
+      }));
+
+      const mappedPartners = pendingBusinessRequests.map((req: any) => ({
+        id: req.id,
+        type: 'partner',
+        hub: req.companyName,
+        phone: req.phone,
+        location: `${req.address}, ${req.country}`,
+        store: req.tradingName || req.companyName,
+      }));
+
+      setRequests([...mappedHubs, ...mappedPartners]);
     }
-  }, [requestsRes]);
+  }, [statsRes]);
 
   const handleAccept = (id: string) => {
     setRequests(prev => prev.filter(r => r.id !== id));
@@ -31,13 +50,15 @@ const DashboardPage: React.FC = () => {
     message.error('Request declined.');
   };
 
+  const metrics = statsRes?.data?.metrics || {};
+
   const shipmentStats = [
-    { label: 'Total Created', value: statsRes?.data?.totalCreated || 0, icon: <Package size={18} />, color: '#2563eb' },
-    { label: 'Total Picked',  value: statsRes?.data?.totalPicked || 0,  icon: <PackageCheck size={18} />, color: '#7c3aed' },
-    { label: 'At Hub',        value: statsRes?.data?.atHub || 0,        icon: <Warehouse size={18} />, color: '#0891b2' },
-    { label: 'In Transit',    value: statsRes?.data?.inTransit || 0,    icon: <Navigation size={18} />, color: '#d97706' },
-    { label: 'Out Delivery',  value: statsRes?.data?.outDelivery || 0,  icon: <Truck size={18} />, color: '#dc2626' },
-    { label: 'Delivered',     value: statsRes?.data?.delivered || 0,    icon: <CheckCircle2 size={18} />, color: '#059669' },
+    { label: 'Total Created', value: metrics.totalCreated || 0, icon: <Package size={18} />, color: '#2563eb' },
+    { label: 'Total Picked',  value: metrics.totalPicked || 0,  icon: <PackageCheck size={18} />, color: '#7c3aed' },
+    { label: 'At Hub',        value: metrics.atHub || 0,        icon: <Warehouse size={18} />, color: '#0891b2' },
+    { label: 'In Transit',    value: metrics.inTransit || 0,    icon: <Navigation size={18} />, color: '#d97706' },
+    { label: 'Out Delivery',  value: metrics.outDelivery || 0,  icon: <Truck size={18} />, color: '#dc2626' },
+    { label: 'Delivered',     value: metrics.delivered || 0,    icon: <CheckCircle2 size={18} />, color: '#059669' },
   ];
 
   const RequestTable = ({ data, title, loading }: { data: HubRequest[]; title: string; loading?: boolean }) => (
@@ -86,7 +107,7 @@ const DashboardPage: React.FC = () => {
                   </td>
                   <td className="px-5 py-3.5">
                     <button onClick={() => setDetailModal(req)}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
+                      className="w-8 h-8 flex items-center justify-center rounded hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
                       <Eye size={14} />
                     </button>
                   </td>
@@ -99,6 +120,22 @@ const DashboardPage: React.FC = () => {
     </Card>
   );
 
+  const yearOptions = Array.from({ length: 5 }, (_, i) => {
+    const year = new Date().getFullYear() - 2 + i;
+    return { value: year, label: year.toString() };
+  });
+
+  const YearSelector = () => (
+    <Select
+      value={selectedYear}
+      onChange={setSelectedYear}
+      options={yearOptions}
+      size="small"
+      className="w-20"
+      variant="filled"
+    />
+  );
+
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
@@ -108,16 +145,24 @@ const DashboardPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <Card title="User Growth" extra={<span className="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">2026</span>}>
-          <UserGrowthChart data={growthRes?.data?.userGrowth || userGrowthData} height={195} />
+        <Card title="User Growth" extra={<YearSelector />}>
+          {statsFetching && !statsLoading ? (
+             <div className="h-[195px] flex items-center justify-center"><Skeleton active /></div>
+          ) : (
+             <UserGrowthChart data={statsRes?.data?.userGrowth || userGrowthData} height={195} />
+          )}
         </Card>
-        <Card title="Earning Growth" extra={<span className="text-xs font-medium text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">2026</span>}>
-          <EarningsChart data={growthRes?.data?.earningGrowth || earningGrowthData} height={195} />
+        <Card title="Earning Growth" extra={<YearSelector />}>
+          {statsFetching && !statsLoading ? (
+             <div className="h-[195px] flex items-center justify-center"><Skeleton active /></div>
+          ) : (
+             <EarningsChart data={statsRes?.data?.earningGrowth || earningGrowthData} height={195} />
+          )}
         </Card>
       </div>
 
-      <RequestTable data={requests.filter(r => r.type === 'hub')} title="New Hub Requests" loading={requestsLoading} />
-      <RequestTable data={requests.filter(r => r.type === 'partner')} title="New Business Partner Requests" loading={requestsLoading} />
+      <RequestTable data={requests.filter(r => r.type === 'hub')} title="New Hub Requests" loading={statsLoading} />
+      <RequestTable data={requests.filter(r => r.type === 'partner')} title="New Business Partner Requests" loading={statsLoading} />
 
       {/* Detail Modal */}
       <Modal open={!!detailModal} onCancel={() => setDetailModal(null)} footer={null} title="Request Details" width={440}>
@@ -130,7 +175,7 @@ const DashboardPage: React.FC = () => {
                 { label: 'Location', value: detailModal.location },
                 { label: 'Store', value: detailModal.store },
               ].map(item => (
-                <div key={item.label} className="bg-slate-50 rounded-xl p-3">
+                <div key={item.label} className="bg-slate-50 rounded p-3">
                   <p className="text-xs text-slate-400 font-medium mb-1">{item.label}</p>
                   <p className="text-sm font-semibold text-slate-700 capitalize">{item.value}</p>
                 </div>
@@ -138,11 +183,11 @@ const DashboardPage: React.FC = () => {
             </div>
             <div className="flex gap-3 pt-2">
               <div onClick={() => { handleAccept(detailModal.id); setDetailModal(null); }}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors text-center cursor-pointer">
+                className="flex-1 py-2.5 rounded text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors text-center cursor-pointer">
                 Accept Request
               </div>
               <div onClick={() => { handleDecline(detailModal.id); setDetailModal(null); }}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors text-center cursor-pointer">
+                className="flex-1 py-2.5 rounded text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors text-center cursor-pointer">
                 Decline
               </div>
             </div>
@@ -154,3 +199,4 @@ const DashboardPage: React.FC = () => {
 };
 
 export default DashboardPage;
+

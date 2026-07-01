@@ -29,6 +29,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem("buan_logged_in");
     localStorage.removeItem("buan_user_data");
     localStorage.removeItem("role");
+    
+    // Force a redirect and reload to clear state and re-evaluate auth
+    window.location.href = '/login';
   };
 
   const storedUser = localStorage.getItem('buan_user_data');

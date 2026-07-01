@@ -6,7 +6,7 @@ const BranchPartners: React.FC = () => {
   return (
     <div className="space-y-6 p-5">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+        <div className="w-10 h-10 rounded bg-blue-50 flex items-center justify-center text-blue-600">
           <Building2 size={20} />
         </div>
         <div>

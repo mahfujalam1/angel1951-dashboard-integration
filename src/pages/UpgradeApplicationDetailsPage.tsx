@@ -124,7 +124,7 @@ const UpgradeApplicationDetailsPage: React.FC = () => {
         }
       />
 
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 sm:p-8 rounded-2xl shadow-lg text-white">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 sm:p-8 rounded shadow-md text-white">
         <p className="text-blue-100 text-xs font-bold uppercase tracking-widest mb-2">Tier Upgrade Request</p>
         <div className="flex flex-wrap items-center gap-4">
           <div>
@@ -192,7 +192,7 @@ const UpgradeApplicationDetailsPage: React.FC = () => {
 
           {!isPendingStatus(application.status) && (
             <div
-              className={`rounded-2xl border p-5 ${
+              className={`rounded border p-5 ${
                 isAcceptedStatus(application.status)
                   ? 'bg-emerald-50 border-emerald-100'
                   : isRejectedStatus(application.status)

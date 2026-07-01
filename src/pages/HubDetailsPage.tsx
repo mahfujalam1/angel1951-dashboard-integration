@@ -1,165 +1,196 @@
-import React from 'react';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Phone, Mail, MapPin, Clock, Users, CheckCircle2, XCircle, Home, User, Briefcase, Heart } from 'lucide-react';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, User, DollarSign, Building2, MapPin } from 'lucide-react';
+import { Button, Modal, Select, message, Skeleton, Tag } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import Card from '../components/ui/Card';
-import StatusBadge from '../components/ui/StatusBadge';
-import type { Hub } from '../types';
-import { hubs } from '../data/mockData';
-import { Checkbox } from 'antd';
+import AppTable from '../components/ui/AppTable';
+import { 
+  useGetHubByIdQuery, 
+  useGetHubCommissionsQuery, 
+  useAssignHubProviderMutation,
+  usePayHubCommissionMutation 
+} from '../redux/api/branchesApi';
+import { useGetUsersQuery } from '../redux/api/usersApi';
 
 const HubDetailsPage: React.FC = () => {
   const { id } = useParams();
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const hub: Hub = location.state?.hub || hubs.find(h => h.id === id) || hubs[0];
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<string>('');
+
+  const { data: hubRes, isLoading: hubLoading } = useGetHubByIdQuery(id as string, { skip: !id });
+  const hub = hubRes?.data;
+
+  const [commPage, setCommPage] = useState(1);
+  const { data: commRes, isLoading: commLoading, isFetching: commFetching } = useGetHubCommissionsQuery({ id: id as string, page: commPage, limit: 10 }, { skip: !id });
+  const rawComm = commRes?.data?.commissions || commRes?.data?.data || commRes?.data?.results || commRes?.data;
+  const commissions = Array.isArray(rawComm) ? rawComm : [];
+  const commTotal = commRes?.data?.pagination?.totalItems || commRes?.data?.total || commissions.length || 0;
+
+  const { data: usersRes } = useGetUsersQuery({ limit: 100 });
+  const rawUsers = usersRes?.data?.users || usersRes?.data?.data || usersRes?.data?.results || usersRes?.data;
+  const users = Array.isArray(rawUsers) ? rawUsers : [];
+
+  const [assignProvider, { isLoading: isAssigning }] = useAssignHubProviderMutation();
+  const [payCommission, { isLoading: isPaying }] = usePayHubCommissionMutation();
+
+  const handleAssignProvider = async () => {
+    if (!selectedProvider) return message.error('Please select a provider');
+    try {
+      await assignProvider({ id: id as string, providerId: selectedProvider }).unwrap();
+      message.success('Provider assigned successfully');
+      setIsAssignModalOpen(false);
+      setSelectedProvider('');
+    } catch (err: any) {
+      message.error(err?.data?.message || 'Failed to assign provider');
+    }
+  };
+
+  const handlePayCommission = async (commissionId: string) => {
+    try {
+      await payCommission({ commissionId, hubId: id as string }).unwrap();
+      message.success('Commission paid successfully');
+    } catch (err: any) {
+      message.error(err?.data?.message || 'Failed to pay commission');
+    }
+  };
+
+  const commColumns: ColumnsType<any> = [
+    { title: 'ID', dataIndex: 'id', key: 'id', width: 80, render: (v: string) => <span className="text-xs font-mono text-slate-400">#{v?.substring(0, 5)}</span> },
+    { title: 'Amount', dataIndex: 'amount', key: 'amount', render: (v: number) => <span className="font-semibold text-green-600">${v?.toFixed(2)}</span> },
+    { title: 'Package ID', dataIndex: 'packageId', key: 'packageId', render: (v: string) => <span className="text-sm font-mono text-slate-600">{v || 'N/A'}</span> },
+    { 
+      title: 'Status', dataIndex: 'status', key: 'status', 
+      render: (s: string) => (
+        <Tag color={s === 'PAID' ? 'success' : 'warning'}>{s}</Tag>
+      ) 
+    },
+    {
+      title: 'Action', key: 'action', width: 100,
+      render: (_: any, r: any) => (
+        <Button 
+          type="primary" 
+          size="small" 
+          disabled={r.status === 'PAID' || isPaying}
+          onClick={() => handlePayCommission(r.id)}
+          className="bg-blue-600 cursor-pointer"
+        >
+          {r.status === 'PAID' ? 'Paid' : 'Pay'}
+        </Button>
+      )
+    }
+  ];
+
+  if (hubLoading) return <div className="p-10"><Skeleton active /></div>;
+  if (!hub) return <div className="p-10 text-center text-slate-500">Hub not found</div>;
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-10">
-      {/* Back + header */}
-      <div className="flex items-center gap-3">
-        <button onClick={() => navigate(-1)}
-          className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600 shadow-sm">
-          <ArrowLeft size={18} />
-        </button>
-        <div>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)}
+            className="w-10 h-10 flex items-center justify-center rounded bg-white border border-slate-200 hover:bg-slate-50 transition-colors text-slate-600 shadow-sm cursor-pointer">
+            <ArrowLeft size={18} />
+          </button>
           <h1 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Hub Details</h1>
         </div>
+        <Button type="primary" onClick={() => setIsAssignModalOpen(true)} className="bg-blue-600 cursor-pointer" style={{ borderRadius: 4 }}>
+          Assign Provider
+        </Button>
       </div>
 
-      {/* Main Card with Illustration */}
       <Card>
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-2">
-          <div className="flex-1">
-            <h2 className="text-2xl font-bold text-slate-800 mb-2" style={{ fontFamily: 'Sora, sans-serif' }}>
-              John's Provision Store
-            </h2>
-            <div className="space-y-1">
-              <p className="text-sm text-slate-400 font-medium">Registered Since Feb 20 2022</p>
-              <p className="text-sm text-slate-400 font-medium">Approved by Sophiai Tan Admin on Feb 31 2022</p>
+          <div className="flex-1 space-y-4">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-800 mb-2" style={{ fontFamily: 'Sora, sans-serif' }}>
+                {hub.name}
+              </h2>
+              <div className="flex items-center gap-2 text-sm text-slate-500">
+                <MapPin size={14} className="text-slate-400" />
+                {hub.address}
+              </div>
             </div>
-          </div>
-          <div className="w-32 h-32 relative">
-            <div className="absolute inset-0 bg-blue-50 rounded-full scale-90"></div>
-            <img 
-              src="https://img.freepik.com/free-vector/store-concept-illustration_114360-1238.jpg" 
-              alt="Store" 
-              className="w-full h-full object-contain relative z-10 rounded-2xl"
-            />
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
+              <div>
+                <p className="text-xs text-slate-400 mb-1">Branch</p>
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-slate-700">
+                  <Building2 size={14} className="text-blue-500" />
+                  {hub.branch?.name || 'N/A'}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">Provider</p>
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-slate-700">
+                  <User size={14} className="text-blue-500" />
+                  {hub.hubProvider ? `${hub.hubProvider.firstName} ${hub.hubProvider.lastName}` : 'Unassigned'}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400 mb-1">Commission Rate</p>
+                <div className="flex items-center gap-1.5 text-sm font-semibold text-green-600">
+                  <DollarSign size={14} />
+                  {hub.commissionPerPackage || 0} / package
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </Card>
 
-      {/* 1. Shop Details */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
-        <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">1.</div>
-          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Shop Details :</h3>
-        </div>
+      <div className="bg-white rounded p-6 border border-slate-100 shadow-sm">
+        <h3 className="text-lg font-bold text-slate-800 mb-4" style={{ fontFamily: 'Sora, sans-serif' }}>Commissions History</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 ml-12">
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm font-bold text-slate-800 mb-1">Shop Name John's Provision Store</p>
-              <p className="text-xs text-slate-500">Business Type Provision Store</p>
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 leading-relaxed">Full Address 55 Hillview Ave Singapore 589900</p>
-              <p className="text-xs text-slate-500 mt-1">Landmark Near Hillview MRT Station</p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <p className="text-xs text-slate-500">City State Singapore</p>
-            <p className="text-xs text-slate-500">555 Contact Number</p>
-            <p className="text-xs text-slate-500">+65 8123 4567 johnsstore@email.com Google</p>
-            <p className="text-xs text-slate-500">johnsstore@email.com</p>
-          </div>
-        </div>
+        {commLoading ? (
+          <Skeleton active paragraph={{ rows: 4 }} />
+        ) : (
+          <AppTable 
+            columns={commColumns} 
+            data={commissions}
+            total={commTotal} 
+            pageSize={10} 
+            current={commPage} 
+            onPageChange={setCommPage} 
+            loading={commFetching} 
+          />
+        )}
       </div>
 
-      {/* 2. Owner/ Manager Details */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
-        <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">2.</div>
-          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Owner/ Manager Details :</h3>
+      <Modal
+        title="Assign Hub Provider"
+        open={isAssignModalOpen}
+        onCancel={() => setIsAssignModalOpen(false)}
+        footer={[
+          <Button key="back" onClick={() => setIsAssignModalOpen(false)} style={{ borderRadius: 4 }} className="cursor-pointer">
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" loading={isAssigning} onClick={handleAssignProvider} className="bg-blue-600 cursor-pointer" style={{ borderRadius: 4 }}>
+            Assign
+          </Button>,
+        ]}
+      >
+        <div className="py-4">
+          <label className="block text-sm font-medium text-slate-700 mb-2">Select User</label>
+          <Select
+            showSearch
+            className="w-full"
+            placeholder="Search to Select Provider"
+            optionFilterProp="children"
+            value={selectedProvider}
+            onChange={setSelectedProvider}
+            style={{ borderRadius: 4 }}
+          >
+            {users.map((u: any) => (
+              <Select.Option key={u.id} value={u.id}>
+                {u.firstName} {u.lastName} ({u.email})
+              </Select.Option>
+            ))}
+          </Select>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 ml-12">
-          <div className="flex justify-between items-center max-w-sm">
-            <span className="text-xs text-slate-400">Full Name:</span>
-            <span className="text-xs font-bold text-slate-700">John Lim</span>
-          </div>
-          <div className="flex justify-between items-center max-w-sm">
-            <span className="text-xs text-slate-400">Phone Number:</span>
-            <span className="text-xs font-bold text-slate-700">+65 9123 4567</span>
-          </div>
-          <div className="flex justify-between items-center max-w-sm">
-            <span className="text-xs text-slate-400">Email Address:</span>
-            <span className="text-xs font-bold text-slate-700">johnsstore@email.com</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Shop Operations */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
-        <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">3.</div>
-          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Shop Operations :</h3>
-        </div>
-        
-        <div className="ml-12 space-y-6">
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-slate-400 w-32">Opening Days:</span>
-            <div className="flex gap-4">
-              {['Mon', 'Tue', 'Wed', 'Thu'].map(day => (
-                <div key={day} className="flex items-center gap-2">
-                  <Checkbox checked className="scale-90" />
-                  <span className="text-xs text-slate-600 font-medium">{day}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-slate-400 w-32">Opening Hours:</span>
-            <span className="text-xs font-bold text-slate-700">08:00 AM to 09:00 PM</span>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-slate-400 w-32">Number of Staff on Duty Daily:</span>
-            <span className="text-xs font-bold text-slate-700">02</span>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-slate-400 w-32">Secure for Parcels:</span>
-            <span className="text-xs font-bold text-slate-700">Yes</span>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <span className="text-xs text-slate-400 w-32">Approx. Daily Foot Traffic:</span>
-            <span className="text-xs font-bold text-slate-700">50-100</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 5. Experience & Commitment */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm relative overflow-hidden">
-        <div className="absolute left-0 top-8 w-1 h-8 bg-blue-500 rounded-r-full"></div>
-        <div className="flex items-start gap-4 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">5.</div>
-          <h3 className="text-lg font-bold text-slate-800 pt-1" style={{ fontFamily: 'Sora, sans-serif' }}>Experience & Commitment :</h3>
-        </div>
-        
-        <div className="ml-12 space-y-4">
-          <p className="text-[10px] text-slate-500 font-medium">Used to handle delivery and logistics services</p>
-          <p className="text-[10px] text-slate-500 font-medium">Willing to commit as pickup hub for at least 1 month</p>
-          <p className="text-[10px] text-slate-500 font-medium">Special Note Handles fragile items with extra care</p>
-          <p className="text-[10px] text-slate-500 font-medium">Preferred pickup hub near major MRT station</p>
-        </div>
-      </div>
+      </Modal>
     </div>
   );
 };

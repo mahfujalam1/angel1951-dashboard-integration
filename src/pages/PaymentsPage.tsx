@@ -32,7 +32,7 @@ const PaymentsPage: React.FC = () => {
         </div>
       ),
     },
-    { title: 'Payment ID', dataIndex: 'paymentId', key: 'paymentId', render: (v: string) => <span className="font-mono text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-lg">{v}</span> },
+    { title: 'Payment ID', dataIndex: 'paymentId', key: 'paymentId', render: (v: string) => <span className="font-mono text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded">{v}</span> },
     {
       title: 'Type', dataIndex: 'type', key: 'type',
       render: (v: string) => <span className="px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold">{v}</span>,
@@ -45,7 +45,7 @@ const PaymentsPage: React.FC = () => {
       title: '', key: 'action', width: 60,
       render: (_: unknown, r: Payment) => (
         <button onClick={() => setViewPayment(r)}
-          className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
+          className="w-8 h-8 flex items-center justify-center rounded hover:bg-blue-50 text-slate-400 hover:text-blue-500 transition-colors">
           <Eye size={15} />
         </button>
       ),
@@ -86,8 +86,8 @@ const PaymentsPage: React.FC = () => {
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Service Type</label>
-                <div className="flex items-center gap-2 px-3 h-11 bg-slate-50 border border-slate-100 rounded-xl">
-                  <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-slate-400">
+                <div className="flex items-center gap-2 px-3 h-11 bg-slate-50 border border-slate-100 rounded">
+                  <div className="w-6 h-6 rounded bg-white flex items-center justify-center text-slate-400">
                     <Box size={14} />
                   </div>
                   <span className="text-sm font-semibold text-slate-700">Freight Transport</span>
@@ -95,8 +95,8 @@ const PaymentsPage: React.FC = () => {
               </div>
               <div>
                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Currency</label>
-                <div className="flex items-center gap-2 px-3 h-11 bg-slate-50 border border-slate-100 rounded-xl">
-                  <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center text-slate-400">
+                <div className="flex items-center gap-2 px-3 h-11 bg-slate-50 border border-slate-100 rounded">
+                  <div className="w-6 h-6 rounded bg-white flex items-center justify-center text-slate-400">
                     <CreditCard size={14} />
                   </div>
                   <span className="text-sm font-semibold text-slate-700">USD - US Dollar</span>
@@ -106,18 +106,18 @@ const PaymentsPage: React.FC = () => {
 
             <div className="mb-8">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Amount Payable</label>
-              <div className="flex items-center justify-between px-4 h-14 bg-blue-50 border border-blue-100 rounded-2xl">
+              <div className="flex items-center justify-between px-4 h-14 bg-blue-50 border border-blue-100 rounded">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-blue-600 shadow-sm">
+                  <div className="w-8 h-8 rounded bg-white flex items-center justify-center text-blue-600 shadow-sm">
                     <FileText size={16} />
                   </div>
                   <span className="text-xl font-bold text-blue-700" style={{ fontFamily: 'Sora, sans-serif' }}>45,000.00</span>
                 </div>
-                <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wider">Calculated</span>
+                <span className="px-2.5 py-1 rounded bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wider">Calculated</span>
               </div>
             </div>
 
-            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-8">
+            <div className="bg-slate-50 rounded p-6 border border-slate-100 mb-8">
               <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Order Breakdown</h4>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">

@@ -24,7 +24,7 @@ const AssignHubModal: React.FC<AssignHubModalProps> = ({ open, onCancel, onFinis
       }
     >
       <div className="text-center mb-6 pt-2">
-        <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded flex items-center justify-center mx-auto mb-4">
           <Building2 size={32} />
         </div>
         <h2 className="text-xl font-bold text-slate-800" style={{ fontFamily: 'Sora, sans-serif' }}>Assign Hub</h2>
